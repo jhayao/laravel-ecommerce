@@ -19,11 +19,81 @@
       "slug": "pages-dashboard"
     },
     {
-      "url": "/pages/misc-error",
-      "name": "Error",
-      "icon": "menu-icon tf-icons ri-alert-line",
-      "slug": "pages-misc-error",
-      "target": "_blank"
+      "name": "Products",
+      "icon": "menu-icon tf-icons ri-shopping-bag-3-line",
+      "slug": "pages-product",
+      "submenu": [
+        {
+          "url": "products/list",
+          "name": "Product List",
+          "slug": "pages-product-list"
+        },
+        {
+          "url": "products/add",
+          "name": "Add Product",
+          "slug": "pages-product-add"
+        },
+        {
+          "url": "products/category",
+          "name": "Category List",
+          "slug": "pages-product-category"
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "slug": "pages-order",
+      "icon": "menu-icon tf-icons ri-shopping-cart-2-line",
+      "submenu": [
+        {
+          "url": "orders/list",
+          "name": "Order List",
+          "slug": "pages-order-list"
+        },
+        {
+          "url": "orders/details",
+          "name": "Order Details",
+          "slug": "pages-order-details"
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "slug": "pages-customer",
+      "icon": "menu-icon tf-icons ri-user-star-line",
+      "submenu": [
+        {
+          "url": "customers/all",
+          "name": "All Customers",
+          "slug": "pages-customer-all"
+        },
+        {
+          "name": "Customer Details",
+          "slug": "pages-customer-details",
+          "submenu": [
+            {
+              "url": "customers/details/overview",
+              "name": "Overview",
+              "slug": "pages-customer-details-overview"
+            },
+            {
+              "url": "customers/details/security",
+              "name": "Security",
+              "slug": "pages-customer-details-security"
+            },
+            {
+              "url": "customers/details/billing",
+              "name": "Address & Billing",
+              "slug": "pages-customer-details-billing"
+            },
+            {
+              "url": "customers/details/notifications",
+              "name": "Notifications",
+              "slug": "pages-customer-details-notifications"
+            }
+          ]
+        }
+      ]
     },
     {
       "url": "/auth/login-basic",
