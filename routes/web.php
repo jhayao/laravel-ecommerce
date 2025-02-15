@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\pages\EcommerceCustomerAll;
 use App\Http\Controllers\pages\EcommerceCustomerDetailsBilling;
 use App\Http\Controllers\pages\EcommerceCustomerDetailsNotifications;
 use App\Http\Controllers\pages\EcommerceCustomerDetailsOverview;
 use App\Http\Controllers\pages\EcommerceCustomerDetailsSecurity;
-use App\Http\Controllers\pages\EcommerceDashboard;
 use App\Http\Controllers\pages\EcommerceManageReviews;
 use App\Http\Controllers\pages\EcommerceOrderDetails;
 use App\Http\Controllers\pages\EcommerceOrderList;
@@ -46,7 +46,9 @@ Route::get('/dashboard', [DashboardAlias::class, 'index'])->name('pages-dashboar
 Route::group(['prefix' => 'products'], function () {
   Route::get('list', [EcommerceProductList::class, 'index'])->name('pages-product-list');
   Route::get('add', [EcommerceProductAdd::class, 'index'])->name('pages-product-add');
-  Route::get('category', [EcommerceProductCategory::class, 'index'])->name('pages-product-category');
+  Route::get('category', [CategoryController::class, 'index'])->name('pages-product-category');
+  Route::post('category', [CategoryController::class, 'create'])->name('categories.create');
+
 });
 //Orders
 Route::group(['prefix' => 'orders'], function () {

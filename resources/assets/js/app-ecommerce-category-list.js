@@ -8,15 +8,21 @@
 
 const commentEditor = document.querySelector('.comment-editor');
 
-if (commentEditor) {
-  new Quill(commentEditor, {
-    modules: {
-      toolbar: '.comment-toolbar'
-    },
-    placeholder: 'Write a Comment...',
-    theme: 'snow'
-  });
-}
+const quill = new Quill(commentEditor, {
+  modules: {
+    toolbar: '.comment-toolbar'
+  },
+  placeholder: 'Write a Comment...',
+  theme: 'snow'
+});
+
+// Get hidden input field
+const descriptionInput = document.getElementById('ecommerce-category-description-input');
+
+// Sync Quill content to hidden input whenever user types
+quill.on('text-change', function () {
+  descriptionInput.value = quill.root.innerHTML.trim();
+});
 
 // Datatable (jquery)
 
@@ -389,11 +395,10 @@ $(function () {
 //For form validation
 (function () {
   const eCommerceCategoryListForm = document.getElementById('eCommerceCategoryListForm');
-
   //Add New customer Form Validation
   const fv = FormValidation.formValidation(eCommerceCategoryListForm, {
     fields: {
-      categoryTitle: {
+      title: {
         validators: {
           notEmpty: {
             message: 'Please enter category title'
@@ -404,6 +409,13 @@ $(function () {
         validators: {
           notEmpty: {
             message: 'Please enter slug'
+          }
+        }
+      },
+      description: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter description'
           }
         }
       }
@@ -423,5 +435,48 @@ $(function () {
       // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
       autoFocus: new FormValidation.plugins.AutoFocus()
     }
+  });
+
+  fv.on('core.form.valid', function () {
+    // Disable submit button to prevent multiple submits
+    const submitButton = eCommerceCategoryListForm.querySelector('[type="submit"]');
+    submitButton.disabled = true;
+
+    // Collect form data
+    const formData = new FormData(eCommerceCategoryListForm);
+
+    // Send AJAX request
+    fetch(eCommerceCategoryListForm.action, {
+      method: eCommerceCategoryListForm.method, // GET or POST
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest' // Ensure it's an AJAX request
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const options = (toastr.options = {
+          positionClass: 'toast-top-left'
+        });
+        if (data.success) {
+          //hide modal
+          // const offcanvasEcommerceCategoryList = document.getElementById('offcanvasEcommerceCategoryList');
+          // const offcanvasEcommerceCategoryListBS = bootstrap.Offcanvas.getInstance(offcanvasEcommerceCategoryList);
+          // offcanvasEcommerceCategoryListBS.hide();
+
+          toastr.success(options, data.message);
+          // Optionally reset form
+          fv.resetForm(true);
+        } else {
+          toastr.error(options, data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An unexpected error occurred.');
+      })
+      .finally(() => {
+        submitButton.disabled = false; // Re-enable button after request
+      });
   });
 })();

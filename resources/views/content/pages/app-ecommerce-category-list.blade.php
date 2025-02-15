@@ -65,11 +65,12 @@
     </div>
     <!-- Offcanvas Body -->
     <div class="offcanvas-body border-top">
-      <form class="pt-0" id="eCommerceCategoryListForm" onsubmit="return false">
+      <form class="pt-0" id="eCommerceCategoryListForm" method="POST">
+        @csrf
         <!-- Title -->
 
         <div class="form-floating form-floating-outline mb-5">
-          <input type="text" class="form-control" id="ecommerce-category-title" placeholder="Enter category title" name="categoryTitle" aria-label="category title">
+          <input type="text" class="form-control" id="ecommerce-category-title" placeholder="Enter category title" name="title" aria-label="category title">
           <label for="ecommerce-category-title">Title</label>
         </div>
 
@@ -81,19 +82,19 @@
 
         <!-- Image -->
         <div class="form-floating form-floating-outline mb-5">
-          <input class="form-control" type="file" id="ecommerce-category-image">
+          <input class="form-control" type="file" id="image" name="category_image">
           <label for="ecommerce-category-image">Attachment</label>
         </div>
         <!-- Parent category -->
         <div class="mb-5 ecommerce-select2-dropdown">
           <div class="form-floating form-floating-outline">
-            <select id="ecommerce-category-parent-category" class="select2 form-select" data-placeholder="Select parent category" data-allow-clear="true">
+            <select id="ecommerce-category-parent-category" class="select2 form-select" name="parent_id" data-placeholder="Select parent category" data-allow-clear="true">
               <option value="">Select parent Category</option>
-              <option value="Household">Household</option>
-              <option value="Management">Management</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Office">Office</option>
-              <option value="Automotive">Automotive</option>
+              <option value="1">Household</option>
+              <option value="2">Management</option>
+              <option value="3">Electronics</option>
+              <option value="4">Office</option>
+              <option value="5">Automotive</option>
             </select>
             <label for="ecommerce-category-parent-category">Parent category</label>
           </div>
@@ -103,6 +104,7 @@
           <div class="form-control p-0 pt-1">
             <div class="comment-editor border-0" id="ecommerce-category-description">
             </div>
+            <input type="hidden" name="description" id="ecommerce-category-description-input">
             <div class="comment-toolbar border-0 rounded">
               <div class="d-flex justify-content-end">
                 <span class="ql-formats me-0">
@@ -121,11 +123,11 @@
         <!-- Status -->
         <div class="mb-5 ecommerce-select2-dropdown">
           <div class="form-floating form-floating-outline">
-            <select id="ecommerce-category-status" class="select2 form-select" data-placeholder="Select category status">
+            <select id="ecommerce-category-status" class="select2 form-select" data-placeholder="Select category status" name="status">
               <option value="">Select category status</option>
-              <option value="Scheduled">Scheduled</option>
-              <option value="Publish">Publish</option>
-              <option value="Inactive">Inactive</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="publish">Publish</option>
+              <option value="inactive">Inactive</option>
             </select>
             <label for="ecommerce-category-status">Parent status</label>
           </div>

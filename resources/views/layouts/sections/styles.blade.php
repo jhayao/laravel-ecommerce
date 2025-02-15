@@ -18,7 +18,8 @@
 <!-- Vendor Styles -->
 @vite([
   'resources/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.scss',
-  'resources/assets/vendor/libs/typeahead-js/typeahead.scss'
+  'resources/assets/vendor/libs/typeahead-js/typeahead.scss',
+  'resources/assets/vendor/libs/toastr/toastr.scss'
 ])
 @yield('vendor-style')
 
