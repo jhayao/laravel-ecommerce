@@ -6,11 +6,11 @@
       0 => 'Laravel\\Sail\\SailServiceProvider',
     ),
   ),
-  'laravel/telescope' => 
+  'laravel/sanctum' => 
   array (
     'providers' => 
     array (
-      0 => 'Laravel\\Telescope\\TelescopeServiceProvider',
+      0 => 'Laravel\\Sanctum\\SanctumServiceProvider',
     ),
   ),
   'laravel/tinker' => 

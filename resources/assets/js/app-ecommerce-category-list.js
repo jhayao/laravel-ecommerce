@@ -25,6 +25,7 @@ quill.on('text-change', function () {
 });
 
 // Datatable (jquery)
+var dt_category;
 
 $(function () {
   let borderColor, bodyBg, headingColor;
@@ -40,7 +41,7 @@ $(function () {
   }
 
   // Variable declaration for category list table
-  var dt_category_list_table = $('.datatables-category-list');
+
 
   //select2 for dropdowns in offcanvas
 
@@ -58,9 +59,20 @@ $(function () {
 
   // Customers List Datatable
 
+
+});
+
+var dt_category;
+
+function initializeDataTable() {
+  var dt_category_list_table = $('.datatables-category-list');
   if (dt_category_list_table.length) {
-    var dt_category = dt_category_list_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-category-list.json', // JSON file to add data
+    dt_category = dt_category_list_table.DataTable({
+      ajax: {
+        url: '/api/categories/list', // Your server-side endpoint
+        type: 'GET',
+        dataSrc: 'data'
+      },
       columns: [
         // columns according to JSON
         { data: '' },
@@ -108,12 +120,11 @@ $(function () {
               // For Product image
               var $output =
                 '<img src="' +
-                assetsPath +
-                'img/ecommerce-images/' +
+                storagePath +
                 $image +
                 '" alt="Product-' +
                 $id +
-                '" class="rounded">';
+                '" class="rounded img-fluid">';
             } else {
               // For Product badge
               var stateNum = Math.floor(Math.random() * 6);
@@ -182,7 +193,7 @@ $(function () {
           }
         }
       ],
-      order: [2, 'desc'], //set any columns order asc/desc
+      order: [3, 'desc'], //set any columns order asc/desc
       dom:
         '<"card-header d-flex rounded-0 flex-wrap pb-md-0 pt-0"' +
         '<"me-5 ms-n2"f>' +
@@ -367,18 +378,18 @@ $(function () {
             var data = $.map(columns, function (col, i) {
               return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
                 ? '<tr data-dt-row="' +
-                    col.rowIndex +
-                    '" data-dt-column="' +
-                    col.columnIndex +
-                    '">' +
-                    '<td> ' +
-                    col.title +
-                    ':' +
-                    '</td> ' +
-                    '<td class="ps-0">' +
-                    col.data +
-                    '</td>' +
-                    '</tr>'
+                col.rowIndex +
+                '" data-dt-column="' +
+                col.columnIndex +
+                '">' +
+                '<td> ' +
+                col.title +
+                ':' +
+                '</td> ' +
+                '<td class="ps-0">' +
+                col.data +
+                '</td>' +
+                '</tr>'
                 : '';
             }).join('');
 
@@ -390,7 +401,15 @@ $(function () {
     $('.dataTables_length').addClass('my-0');
     $('.dt-action-buttons').addClass('pt-0');
   }
-});
+}
+
+function reloadDataTable() {
+  if (dt_category) {
+    dt_category.ajax.reload(null, false); // Reload data without resetting pagination
+  }
+}
+
+initializeDataTable();
 
 //For form validation
 (function () {
@@ -465,6 +484,7 @@ $(function () {
           // offcanvasEcommerceCategoryListBS.hide();
 
           toastr.success(options, data.message);
+          reloadDataTable();
           // Optionally reset form
           fv.resetForm(true);
         } else {

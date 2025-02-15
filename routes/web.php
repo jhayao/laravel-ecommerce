@@ -48,7 +48,6 @@ Route::group(['prefix' => 'products'], function () {
   Route::get('add', [EcommerceProductAdd::class, 'index'])->name('pages-product-add');
   Route::get('category', [CategoryController::class, 'index'])->name('pages-product-category');
   Route::post('category', [CategoryController::class, 'create'])->name('categories.create');
-
 });
 //Orders
 Route::group(['prefix' => 'orders'], function () {
@@ -63,6 +62,7 @@ Route::group(['prefix' => 'customers'], function () {
   Route::get('details/billing', [EcommerceCustomerDetailsBilling::class, 'index'])->name('pages-customer-details-billing');
   Route::get('details/notifications', [EcommerceCustomerDetailsNotifications::class, 'index'])->name('pages-customer-details-notifications');
 });
+
 
 
 

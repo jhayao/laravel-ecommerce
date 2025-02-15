@@ -24,6 +24,8 @@ class Category extends Model
         'parent_id',
         'status'];
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -37,5 +39,10 @@ class Category extends Model
     public function children()
     {
         return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function scopePublish($query)
+    {
+        return $query->where('status', 'publish');
     }
 }
