@@ -403,6 +403,7 @@ function initializeDataTable() {
   }
 }
 
+
 function reloadDataTable() {
   if (dt_category) {
     dt_category.ajax.reload(null, false); // Reload data without resetting pagination
@@ -478,11 +479,6 @@ initializeDataTable();
           positionClass: 'toast-top-left'
         });
         if (data.success) {
-          //hide modal
-          // const offcanvasEcommerceCategoryList = document.getElementById('offcanvasEcommerceCategoryList');
-          // const offcanvasEcommerceCategoryListBS = bootstrap.Offcanvas.getInstance(offcanvasEcommerceCategoryList);
-          // offcanvasEcommerceCategoryListBS.hide();
-
           toastr.success(options, data.message);
           reloadDataTable();
           // Optionally reset form

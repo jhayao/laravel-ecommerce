@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -97,6 +98,16 @@ class CategoryController extends Controller
       ->orderBy('categories.title')
       ->get();
     $data = ['data' => $data];
+
+    return response()->json($data);
+  }
+
+  public function getCategoriesTitle(): JsonResponse
+  {
+    $data = DB::table('categories')
+      ->select('id', 'title')
+      ->orderBy('title')
+      ->get();
 
     return response()->json($data);
   }

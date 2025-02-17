@@ -19,21 +19,26 @@ $(function () {
   }
 
   // Variable declaration for table
+  var categoryObjApi = {};
+
+  $.ajax({
+    url: '/api/categories/category-title',
+    type: 'GET',
+    success: function (response) {
+      response.forEach(function (category) {
+        categoryObjApi[category.id] = { title: category.title };
+      });
+    }
+  });
+  console.log(categoryObjApi);
   var dt_product_table = $('.datatables-products'),
-    productAdd = baseUrl + 'app/ecommerce/product/add',
+    productAdd = baseUrl + 'products/add',
     statusObj = {
       1: { title: 'Scheduled', class: 'bg-label-warning' },
       2: { title: 'Publish', class: 'bg-label-success' },
       3: { title: 'Inactive', class: 'bg-label-danger' }
     },
-    categoryObj = {
-      0: { title: 'Household' },
-      1: { title: 'Office' },
-      2: { title: 'Electronics' },
-      3: { title: 'Shoes' },
-      4: { title: 'Accessories' },
-      5: { title: 'Game' }
-    },
+    categoryObj = categoryObjApi,
     stockObj = {
       0: { title: 'Out_of_Stock' },
       1: { title: 'In_Stock' }
@@ -47,7 +52,11 @@ $(function () {
 
   if (dt_product_table.length) {
     var dt_products = dt_product_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-product-list.json', // JSON file to add data
+      ajax: {
+        url: '/api/products/list', // Your server-side endpoint
+        type: 'GET',
+        dataSrc: 'data'
+      },
       columns: [
         // columns according to JSON
         { data: 'id' },
@@ -57,7 +66,6 @@ $(function () {
         { data: 'stock' },
         { data: 'sku' },
         { data: 'price' },
-        { data: 'quantity' },
         { data: 'status' },
         { data: '' }
       ],
@@ -92,15 +100,14 @@ $(function () {
           render: function (data, type, full, meta) {
             var $name = full['product_name'],
               $id = full['id'],
-              $product_brand = full['product_brand'],
+              $product_brand = full['description'] ?? '',
               $image = full['image'];
             if ($image) {
               // For Product image
 
               var $output =
                 '<img src="' +
-                assetsPath +
-                'img/ecommerce-images/' +
+                storagePath +
                 $image +
                 '" alt="Product-' +
                 $id +
@@ -137,27 +144,12 @@ $(function () {
         },
         {
           // Product Category
-
           targets: 3,
           responsivePriority: 5,
           render: function (data, type, full, meta) {
             var $category = categoryObj[full['category']].title;
-            var categoryBadgeObj = {
-              Household:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-warning me-3"><i class="ri-home-6-line"></i></span>',
-              Office:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-success me-3"><i class="ri-briefcase-line"></i></span>',
-              Electronics:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-primary me-3"><i class="ri-smartphone-line"></i></span>',
-              Shoes:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-info me-3"><i class="ri-footprint-line"></i></span>',
-              Accessories:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-secondary me-3"><i class="ri-headphone-line"></i></span>',
-              Game: '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-dark me-3"><i class="ri-gamepad-line"></i></span>'
-            };
             return (
               "<h6 class='text-truncate d-flex align-items-center mb-0 fw-normal'>" +
-              categoryBadgeObj[$category] +
               $category +
               '</h6>'
             );
@@ -166,36 +158,10 @@ $(function () {
         {
           // Stock
           targets: 4,
-          orderable: false,
-          responsivePriority: 3,
           render: function (data, type, full, meta) {
-            var $stock = full['stock'];
-            var stockSwitchObj = {
-              Out_of_Stock:
-                '<label class="switch switch-primary switch-sm">' +
-                '<input type="checkbox" class="switch-input" id="switch">' +
-                '<span class="switch-toggle-slider">' +
-                '<span class="switch-off">' +
-                '</span>' +
-                '</span>' +
-                '</label>',
-              In_Stock:
-                '<label class="switch switch-primary switch-sm">' +
-                '<input type="checkbox" class="switch-input" checked="">' +
-                '<span class="switch-toggle-slider">' +
-                '<span class="switch-on">' +
-                '</span>' +
-                '</span>' +
-                '</label>'
-            };
-            return (
-              "<span class='text-truncate'>" +
-              stockSwitchObj[stockObj[$stock].title] +
-              '<span class="d-none">' +
-              stockObj[$stock].title +
-              '</span>' +
-              '</span>'
-            );
+            var $sku = full['stock'];
+
+            return '<span>' + $sku + '</span>';
           }
         },
         {
@@ -212,18 +178,7 @@ $(function () {
           targets: 6,
           render: function (data, type, full, meta) {
             var $price = full['price'];
-
             return '<span>' + $price + '</span>';
-          }
-        },
-        {
-          // qty
-          targets: 7,
-          responsivePriority: 4,
-          render: function (data, type, full, meta) {
-            var $qty = full['qty'];
-
-            return '<span>' + $qty + '</span>';
           }
         },
         {
@@ -231,7 +186,6 @@ $(function () {
           targets: -2,
           render: function (data, type, full, meta) {
             var $status = full['status'];
-
             return (
               '<span class="badge rounded-pill ' +
               statusObj[$status].class +
@@ -254,7 +208,7 @@ $(function () {
               '<button class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ri-more-2-line ri-20px"></i></button>' +
               '<div class="dropdown-menu dropdown-menu-end m-0">' +
               '<a href="javascript:0;" class="dropdown-item">View</a>' +
-              '<a href="javascript:0;" class="dropdown-item">Suspend</a>' +
+              '<a href="#" class="dropdown-item dt-delete">Suspend</a>' +
               '</div>' +
               '</div>'
             );
@@ -512,29 +466,100 @@ $(function () {
           });
         // Adding stock filter once table initialized
         this.api()
-          .columns(4)
+          .columns(4) // Adjust column index as needed
           .every(function () {
             var column = this;
             var select = $(
-              '<select id="ProductStock" class="form-select text-capitalize"><option value=""> Stock </option></select>'
+              `<select id="ProductStock" class="form-select text-capitalize">
+        <option value="">Stock</option>
+        <option value="in_stock">Have Stock</option>
+        <option value="out_of_stock">Out of Stock</option>
+      </select>`
             )
               .appendTo('.product_stock')
               .on('change', function () {
-                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                column.search(val ? '^' + val + '$' : '', true, false).draw();
-              });
+                var val = $(this).val();
 
-            column
-              .data()
-              .unique()
-              .sort()
-              .each(function (d, j) {
-                select.append('<option value="' + stockObj[d].title + '">' + stockFilterValObj[d].title + '</option>');
+                if (val === "in_stock") {
+                  column.search("^(?!0$).*$", true, false).draw(); // Matches any number > 0
+                } else if (val === "out_of_stock") {
+                  column.search("^0$", true, false).draw(); // Matches exactly 0
+                } else {
+                  column.search("").draw(); // Reset filter
+                }
               });
           });
+
       }
     });
     $('.dt-action-buttons').addClass('pt-0');
     $('.dt-buttons').addClass('d-flex flex-wrap');
+
+
+
+
   }
+});
+
+//document after render
+$(document).ready(function () {
+  // Delete row
+  $('.datatables-products').on('click', '.dt-delete', function (e) {
+    var $row = $(this).closest('tr');
+    var data = $('.datatables-products').DataTable().row($row).data();
+    var id = data.id;
+    var url = '/api/products/delete/' + id;
+    var $table = $('.datatables-products').DataTable();
+    var $row = $(this).closest('tr');
+    var data = $table.row($row).data();
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#D94148',
+      cancelButtonColor: '#536DE6',
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'btn btn-primary me-1 waves-effect waves-light',
+        cancelButton: 'btn btn-outline-secondary waves-effect'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: url,
+          type: 'DELETE',
+          success: function (response) {
+            if (response.success) {
+              $table.row($row).remove().draw();
+              Swal.fire({
+                title: 'Deleted!',
+                text: 'The product has been deleted.',
+                icon: 'success',
+                showCancelButton: false,
+                confirmButtonText: 'Yes, delete it!',
+              });
+            } else {
+              Swal.fire({
+                title: 'Error!',
+                text: 'The product has not been deleted.',
+                icon: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#D94148',
+                cancelButtonColor: '#536DE6',
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                  confirmButton: 'btn btn-primary me-1 waves-effect waves-light',
+                  cancelButton: 'btn btn-outline-secondary waves-effect'
+                },
+                buttonsStyling: false
+              });
+            }
+          }
+        });
+      }
+    });
+  });
 });

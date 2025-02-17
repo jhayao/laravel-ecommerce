@@ -24,43 +24,18 @@
 
   // ! Don't change it unless you really know what you are doing
 
-  const previewTemplate = `<div class="dz-preview dz-file-preview">
-<div class="dz-details">
-  <div class="dz-thumbnail">
-    <img data-dz-thumbnail>
-    <span class="dz-nopreview">No preview</span>
-    <div class="dz-success-mark"></div>
-    <div class="dz-error-mark"></div>
-    <div class="dz-error-message"><span data-dz-errormessage></span></div>
-    <div class="progress">
-      <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-dz-uploadprogress></div>
-    </div>
-  </div>
-  <div class="dz-filename" data-dz-name></div>
-  <div class="dz-size" data-dz-size></div>
-</div>
-</div>`;
+
 
   // ? Start your code from here
 
   // Basic Dropzone
 
-  const dropzoneBasic = document.querySelector('#dropzone-basic');
-  if (dropzoneBasic) {
-    const myDropzone = new Dropzone(dropzoneBasic, {
-      previewTemplate: previewTemplate,
-      parallelUploads: 1,
-      maxFilesize: 5,
-      acceptedFiles: '.jpg,.jpeg,.png,.gif',
-      addRemoveLinks: true,
-      maxFiles: 1
-    });
-  }
+
 
   // Basic Tags
 
-  const tagifyBasicEl = document.querySelector('#ecommerce-product-tags');
-  const TagifyBasic = new Tagify(tagifyBasicEl);
+  // const tagifyBasicEl = document.querySelector('#ecommerce-product-tags');
+  // const TagifyBasic = new Tagify(tagifyBasicEl);
 
   // Flatpickr
 
@@ -139,3 +114,145 @@ $(function () {
     });
   }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const eCommerceProductAddForm = document.getElementById('eCommerceProductAddForm');
+
+  if (!eCommerceProductAddForm) {
+    console.error("Form not found! Ensure it exists before initializing.");
+    return;
+  }
+
+  // Initialize form validation
+  const fv = FormValidation.formValidation(eCommerceProductAddForm, {
+    fields: {
+      productTitle: { validators: { notEmpty: { message: 'Please enter Product name' } } },
+      productSku: { validators: { notEmpty: { message: 'Please enter Product SKU' } } },
+      productBarcode: { validators: { notEmpty: { message: 'Please enter Product Barcode' } } },
+      productPrice: { validators: { notEmpty: { message: 'Please enter Product Price' } } },
+      productCategory: { validators: { notEmpty: { message: 'Please select Product Category' } } },
+      productStocks: { validators: { notEmpty: { message: 'Please enter Product Stock' } } },
+      productImage: { validators: { notEmpty: { message: 'Please upload Product Image' } } },
+      productStatus: { validators: { notEmpty: { message: 'Please select Product Status' } } },
+    },
+    plugins: {
+      trigger: new FormValidation.plugins.Trigger(),
+      bootstrap5: new FormValidation.plugins.Bootstrap5({
+        eleValidClass: 'is-valid',
+        rowSelector: function (field, ele) {
+          return '.mb-5';
+        }
+      }),
+      submitButton: new FormValidation.plugins.SubmitButton(),
+      autoFocus: new FormValidation.plugins.AutoFocus()
+    }
+  });
+
+
+
+  const previewTemplate = `<div class="dz-preview dz-file-preview">
+<div class="dz-details">
+  <div class="dz-thumbnail">
+    <img data-dz-thumbnail>
+    <span class="dz-nopreview">No preview</span>
+    <div class="dz-success-mark"></div>
+    <div class="dz-error-mark"></div>
+    <div class="dz-error-message"><span data-dz-errormessage></span></div>
+    <div class="progress">
+      <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-dz-uploadprogress></div>
+    </div>
+  </div>
+  <div class="dz-filename" data-dz-name></div>
+  <div class="dz-size" data-dz-size></div>
+</div>
+</div>`;
+
+  const dropzoneBasic = document.querySelector('#dropzone-basic');
+    const myDropzone = new Dropzone(dropzoneBasic, {
+      url: '/api/products/product-image-upload',
+      previewTemplate: previewTemplate,
+      parallelUploads: 1,
+      maxFilesize: 5,
+      acceptedFiles: '.jpg,.jpeg,.png,.gif',
+      addRemoveLinks: true,
+      maxFiles: 1,
+      init: function () {
+        this.on('addedfile', function (file) {
+          if (this.files.length > 1) {
+            this.removeFile(this.files[0]);
+          }
+        });
+
+        this.on('success', function (file, response) {
+          console.log(response);
+          if (response.success) {
+            toastr.options = { positionClass: 'toast-top-left' };
+            toastr.success(response.message);
+            eCommerceProductAddForm.querySelector('[name="productImage"]').value = response.image;
+          } else {
+            toastr.error(response.message);
+          }
+        });
+
+        this.on('error', function (file, response) {
+          toastr.error(response.message);
+        });
+
+        this.on('removedfile', function (file) {
+          //call the delete image api
+          fetch('/api/products/product-image-delete', {
+            method: 'POST',
+            body: JSON.stringify({ image: eCommerceProductAddForm.querySelector('[name="productImage"]').value }),
+            headers: { 'Content-Type': 'application/json' }
+          })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An unexpected error occurred.');
+            });
+        });
+      }
+    });
+
+
+
+  fv.on('core.form.valid', function () {
+    const submitButton = eCommerceProductAddForm.querySelector('[type="submit"]');
+
+    if (!submitButton) {
+      console.error("Submit button not found!");
+      return;
+    }
+
+    submitButton.disabled = true;
+
+    const formData = new FormData(eCommerceProductAddForm);
+
+    fetch(eCommerceProductAddForm.action, {
+      method: eCommerceProductAddForm.method,
+      body: formData,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+      .then(response => response.json())
+      .then(data => {
+        toastr.options = { positionClass: 'toast-top-left' };
+
+        if (data.success) {
+          toastr.success(data.message);
+          fv.resetForm(true);
+          myDropzone.removeAllFiles();
+        } else {
+          toastr.error(data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An unexpected error occurred.');
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+      });
+  });
+
+
+});
+

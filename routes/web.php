@@ -20,6 +20,8 @@ use App\Http\Controllers\pages\EcommerceSettingsNotifications;
 use App\Http\Controllers\pages\EcommerceSettingsPayments;
 use App\Http\Controllers\pages\EcommerceSettingsShipping;
 use App\Http\Controllers\pages\Dashboard as DashboardAlias;
+use App\Http\Controllers\ProductController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\language\LanguageController;
 use App\Http\Controllers\pages\HomePage;
@@ -44,8 +46,9 @@ Route::get('/dashboard', [DashboardAlias::class, 'index'])->name('pages-dashboar
 
 //Products
 Route::group(['prefix' => 'products'], function () {
-  Route::get('list', [EcommerceProductList::class, 'index'])->name('pages-product-list');
-  Route::get('add', [EcommerceProductAdd::class, 'index'])->name('pages-product-add');
+  Route::get('list', [ProductController::class, 'index'])->name('pages-product-list');
+  Route::get('add', [ProductController::class, 'create'])->name('pages-product-add');
+  Route::post('add', [ProductController::class, 'store'])->name('products.add');
   Route::get('category', [CategoryController::class, 'index'])->name('pages-product-category');
   Route::post('category', [CategoryController::class, 'create'])->name('categories.create');
 });
