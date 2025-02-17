@@ -12,7 +12,8 @@ Route::get('/user', function (Request $request) {
 //Categories
 Route::group(['prefix' => 'categories'], function () {
   Route::get('list', [CategoryController::class, 'getCategories'])->name('pages-category-list');
-  Route::post('create', [CategoryController::class, 'create'])->name('categories.create');
+  Route::post('create', [CategoryController::class, 'create'])->name('category.create');
+  Route::delete('delete/{category}', [CategoryController::class, 'destroy'])->name('category.delete');
   Route::get('category-title', [CategoryController::class, 'getCategoriesTitle'])->name('category.title');
 });
 

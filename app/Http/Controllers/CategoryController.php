@@ -71,9 +71,10 @@ class CategoryController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Category $category)
+  public function destroy(Category $category): JsonResponse
   {
-    //
+    $deleted = $category->delete();
+    return response()->json(['success' => $deleted, 'message' => 'Category deleted successfully']);
   }
 
   public function getCategories()

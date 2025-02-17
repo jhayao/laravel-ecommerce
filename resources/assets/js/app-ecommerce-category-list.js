@@ -186,7 +186,7 @@ function initializeDataTable() {
               '<button class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ri-more-2-line ri-20px"></i></button>' +
               '<div class="dropdown-menu dropdown-menu-end m-0">' +
               '<a href="javascript:0;" class="dropdown-item">View</a>' +
-              '<a href="javascript:0;" class="dropdown-item">Suspend</a>' +
+              '<a href="#" class="dropdown-item dt-delete">Suspend</a>' +
               '</div>' +
               '</div>'
             );
@@ -496,3 +496,66 @@ initializeDataTable();
       });
   });
 })();
+
+
+$(document).ready(function () {
+  // Delete row
+  $('.datatables-category-list').on('click', '.dt-delete', function (e) {
+    var $row = $(this).closest('tr');
+    var data = $('.datatables-category-list').DataTable().row($row).data();
+    var id = data.id;
+    var url = '/api/categories/delete/' + id;
+    var $table = $('.datatables-category-list').DataTable();
+    var $row = $(this).closest('tr');
+    var data = $table.row($row).data();
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#D94148',
+      cancelButtonColor: '#536DE6',
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'btn btn-primary me-1 waves-effect waves-light',
+        cancelButton: 'btn btn-outline-secondary waves-effect'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: url,
+          type: 'DELETE',
+          success: function (response) {
+            if (response.success) {
+              $table.row($row).remove().draw();
+              Swal.fire({
+                title: 'Deleted!',
+                text: 'The product has been deleted.',
+                icon: 'success',
+                showCancelButton: false,
+                confirmButtonText: 'Yes, delete it!',
+              });
+            } else {
+              Swal.fire({
+                title: 'Error!',
+                text: 'The product has not been deleted.',
+                icon: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#D94148',
+                cancelButtonColor: '#536DE6',
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                  confirmButton: 'btn btn-primary me-1 waves-effect waves-light',
+                  cancelButton: 'btn btn-outline-secondary waves-effect'
+                },
+                buttonsStyling: false
+              });
+            }
+          }
+        });
+      }
+    });
+  });
+});

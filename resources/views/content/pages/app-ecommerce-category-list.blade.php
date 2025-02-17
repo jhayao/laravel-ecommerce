@@ -12,7 +12,8 @@
   'resources/assets/vendor/libs/@form-validation/form-validation.scss',
   'resources/assets/vendor/libs/quill/typography.scss',
   'resources/assets/vendor/libs/quill/katex.scss',
-  'resources/assets/vendor/libs/quill/editor.scss'
+  'resources/assets/vendor/libs/quill/editor.scss',
+  'resources/assets/vendor/libs/sweetalert2/sweetalert2.scss'
   ])
 @endsection
 
@@ -29,7 +30,8 @@
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',
     'resources/assets/vendor/libs/quill/katex.js',
-    'resources/assets/vendor/libs/quill/quill.js'
+    'resources/assets/vendor/libs/quill/quill.js',
+    'resources/assets/vendor/libs/sweetalert2/sweetalert2.js'
     ])
 @endsection
 
