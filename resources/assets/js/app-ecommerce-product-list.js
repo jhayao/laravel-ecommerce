@@ -117,11 +117,12 @@ $(function () {
               var stateNum = Math.floor(Math.random() * 6);
               var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
               var $state = states[stateNum],
-                $name = full['product_brand'],
+                $name = full['product_name'] ,
                 $initials = $name.match(/\b\w/g) || [];
               $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
               $output = '<span class="avatar-initial rounded-2 bg-label-' + $state + '">' + $initials + '</span>';
             }
+            console.log($name);
             // Creates full output for Product name and product_brand
             var $row_output =
               '<div class="d-flex justify-content-start align-items-center product-name">' +

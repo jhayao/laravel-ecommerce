@@ -27,7 +27,7 @@ class StoreProductRequest extends FormRequest
       'description' => ['sometimes', 'string'],
       'productPrice' => ['required', 'numeric'],
       'productCategory' => ['required', 'exists:categories,id'],
-      'productImage' => ['required', 'string'],
+      'productImage' => ['required', 'array' , 'min:1', 'max:5'],
       'productStatus' => ['required', 'in:scheduled,inactive,publish'],
       'productSku' => ['required', 'string', 'max:255'],
       'productBarcode' => ['required', 'string', 'max:255'],

@@ -2,6 +2,7 @@
  * App eCommerce Add Product Script
  */
 'use strict';
+let storedImageIds = []; // Global variable to store uploaded image IDs
 
 //Javascript to handle the e-commerce product add page
 
@@ -132,7 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
       productPrice: { validators: { notEmpty: { message: 'Please enter Product Price' } } },
       productCategory: { validators: { notEmpty: { message: 'Please select Product Category' } } },
       productStocks: { validators: { notEmpty: { message: 'Please enter Product Stock' } } },
-      productImage: { validators: { notEmpty: { message: 'Please upload Product Image' } } },
       productStatus: { validators: { notEmpty: { message: 'Please select Product Status' } } },
     },
     plugins: {
@@ -172,13 +172,13 @@ document.addEventListener("DOMContentLoaded", function () {
       url: '/api/products/product-image-upload',
       previewTemplate: previewTemplate,
       parallelUploads: 1,
-      maxFilesize: 5,
+      maxFilesize: 10,
       acceptedFiles: '.jpg,.jpeg,.png,.gif',
       addRemoveLinks: true,
-      maxFiles: 1,
+      maxFiles: 5,
       init: function () {
         this.on('addedfile', function (file) {
-          if (this.files.length > 1) {
+          if (this.files.length > 5) {
             this.removeFile(this.files[0]);
           }
         });
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (response.success) {
             toastr.options = { positionClass: 'toast-top-left' };
             toastr.success(response.message);
-            eCommerceProductAddForm.querySelector('[name="productImage"]').value = response.image;
+            storedImageIds.push(response.id);
           } else {
             toastr.error(response.message);
           }
@@ -225,7 +225,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submitButton.disabled = true;
 
-    const formData = new FormData(eCommerceProductAddForm);
+    let formData = new FormData(eCommerceProductAddForm);
+    storedImageIds.forEach((imageId) => {
+      formData.append('productImage[]', imageId);
+    })
 
     fetch(eCommerceProductAddForm.action, {
       method: eCommerceProductAddForm.method,

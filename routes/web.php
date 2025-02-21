@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\pages\EcommerceCustomerAll;
 use App\Http\Controllers\pages\EcommerceCustomerDetailsBilling;
@@ -65,6 +66,8 @@ Route::group(['prefix' => 'customers'], function () {
   Route::get('details/billing', [EcommerceCustomerDetailsBilling::class, 'index'])->name('pages-customer-details-billing');
   Route::get('details/notifications', [EcommerceCustomerDetailsNotifications::class, 'index'])->name('pages-customer-details-notifications');
 });
+
+
 
 
 

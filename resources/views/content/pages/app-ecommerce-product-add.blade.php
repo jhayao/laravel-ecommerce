@@ -109,7 +109,6 @@
           <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0 card-title">Product Image</h5>
           </div>
-          <input type="text" name="productImage" class="mb-5" id="productImage" hidden>
           <div class="card-body">
             <div class="dropzone needsclick" id="dropzone-basic">
               <div class="dz-message needsclick">
