@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Cart extends Model
 {
@@ -21,8 +21,13 @@ class Cart extends Model
     return $this->belongsTo(User::class);
   }
 
-  public function products(): HasMany
+  public function products(): BelongsToMany
   {
-    return $this->hasMany(CartItem::class);
+    return $this->belongsToMany(Product::class, 'cart_items')->withPivot('quantity');
+  }
+
+  public function getTotalAttribute(): float
+  {
+    return $this->products->sum(fn($product) => $product->price * $product->pivot->quantity);
   }
 }

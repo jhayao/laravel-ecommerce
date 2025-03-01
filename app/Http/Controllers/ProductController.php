@@ -68,7 +68,7 @@ class ProductController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(Product $product)
+  public function show(Product $product): JsonResponse
   {
     return response()->json($product->load('images'));
   }
@@ -131,33 +131,41 @@ class ProductController extends Controller
 
   public function getProductList(): JsonResponse
   {
-    $products = Product::selectRaw('
-    products.id,
-    products.description,
-    products.name as product_name,
-    products.sku,
-    products.stock,
-    products.price,
-    products.discounted_price,
-    CASE
-        WHEN products.status = \'publish\' THEN 1
-        WHEN products.status = \'scheduled\' THEN 2
-        WHEN products.status = \'inactive\' THEN 3
-        ELSE 4
-    END as status,
-    MIN(images.image) as image,  -- Use MIN() to select only one image
-    products.category_id as category,
-    categories.title as category_title
-')
-      ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+//    $products = Product::selectRaw('
+//    products.id,
+//    products.description,
+//    products.name as product_name,
+//    products.sku,
+//    products.stock,
+//    products.price,
+//    products.discounted_price,
+//    CASE
+//        WHEN products.status = \'publish\' THEN 1
+//        WHEN products.status = \'scheduled\' THEN 2
+//        WHEN products.status = \'inactive\' THEN 3
+//        ELSE 4
+//    END as status,
+//    MIN(images.image) as image,  -- Use MIN() to select only one image
+//    products.category_id as category,
+//    categories.title as category_title
+//')
+//      ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+//      ->leftJoin('product_images', 'products.id', '=', 'product_images.product_id')
+//      ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
+//      ->whereNull('products.deleted_at')  // Exclude soft-deleted products
+//      ->groupBy('products.id', 'products.description', 'products.name', 'products.sku', 'products.stock', 'products.price', 'products.discounted_price', 'products.status', 'products.category_id', 'categories.title')
+//      ->get();
+//    $product_data = ['data' => $products];
+
+
+    $product_data = Product::join('categories', 'products.category_id', '=', 'categories.id')
+      ->select('products.*', 'categories.title as category', DB::raw('"sale" as label'), DB::raw('MIN(images.image) AS image'))
       ->leftJoin('product_images', 'products.id', '=', 'product_images.product_id')
       ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
-      ->whereNull('products.deleted_at')  // Exclude soft-deleted products
-      ->groupBy('products.id', 'products.description', 'products.name', 'products.sku', 'products.stock', 'products.price', 'products.discounted_price', 'products.status', 'products.category_id', 'categories.title')
+      ->groupBy('products.id')
       ->get();
-    $product_data = ['data' => $products];
 
-    return response()->json($product_data);
+    return response()->json($product_data->load('images'));
   }
 
   public function getProductListShop(): JsonResponse

@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-class StoreCartRequest extends FormRequest
+
+class DeleteProductFromCartRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,13 +22,7 @@ class StoreCartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => ['required', 'exists:products,id'],
-            'quantity' => ['required', 'numeric']
+            'product_id' => ['required', 'exists:products,id']
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        return response()->json($validator->errors(), 422);
     }
 }

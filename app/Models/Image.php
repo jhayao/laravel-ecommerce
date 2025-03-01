@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
 class Image extends Model
 {
@@ -16,6 +17,11 @@ class Image extends Model
   public function products(): BelongsToMany
   {
     return $this->belongsToMany(Product::class, 'product_images', 'image_id', 'product_id');
+  }
+
+  public function getImageAttribute($value): string
+  {
+    return asset($value);
   }
 
 

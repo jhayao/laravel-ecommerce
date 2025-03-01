@@ -14,18 +14,18 @@ class Product extends Model
   use HasFactory, SoftDeletes;
 
   protected $fillable =
-    [
-      'name',
-      'price',
-      'description',
-      'sku',
-      'barcode',
-      'image',
-      'discounted_price',
-      'status',
-      'stock',
-      'category_id'
-    ];
+  [
+    'name',
+    'price',
+    'description',
+    'sku',
+    'barcode',
+    'image',
+    'discounted_price',
+    'status',
+    'stock',
+    'category_id'
+  ];
 
   public function category(): BelongsTo
   {

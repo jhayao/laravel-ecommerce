@@ -1,14 +1,17 @@
 <?php
 
+use App\Http\Controllers\API\CustomerAuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerAddressController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+  return $request->user();
+});
 
 //Categories
 Route::group(['prefix' => 'categories'], function () {
@@ -37,7 +40,38 @@ Route::group(['prefix' => 'shop'], function () {
 });
 
 
-Route::group(['prefix' => 'cart'], function () {
+Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
+  Route::get('count', [CartController::class, 'getCartDetails'])->name('cart.count');
   Route::post('add', [CartController::class, 'addToCart'])->name('cart.add');
-  Route::get('list/{customer_id}', [CartController::class, 'getCartList'])->name('cart.list');
+  Route::get('/', [CartController::class, 'getCartList'])->name('cart.list');
+  Route::put('update-quantity', [CartController::class, 'updateCartQuantity'])->name('cart.update');
+  Route::delete('remove', [CartController::class, 'removeProductFromCart'])->name('cart.remove');
 });
+
+Route::group(['prefix' => 'customer', 'middleware' => 'auth:sanctum'], function () {
+  Route::post('logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
+  Route::put('update', [CustomerController::class, 'update'])->name('customer.update');
+  Route::get('profile', [CustomerAuthController::class, 'profile'])->name('customer.profile');
+
+  Route::group(['prefix' => 'address'], function () {
+    Route::post('store', [CustomerAddressController::class, 'storeAddress'])->name('customer.address.store');
+    Route::get('list', [CustomerAddressController::class, 'getAddressList'])->name('customer.address.list');
+    Route::get('show/{address}', [CustomerAddressController::class, 'showAddress'])->name('customer.address.show');
+    Route::put('update/{address}', [CustomerAddressController::class, 'updateAddress'])->name('customer.address.update');
+    Route::delete('delete/{address}', [CustomerAddressController::class, 'deleteAddress'])->name('customer.address.delete');
+  });
+});
+
+Route::prefix('customer')->group(function () {
+
+
+  Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [CustomerAuthController::class, 'logout']);
+    Route::get('/profile', [CustomerAuthController::class, 'profile']);
+  });
+});
+
+
+
+Route::post('/register', [CustomerAuthController::class, 'register']);
+Route::post('/login', [CustomerAuthController::class, 'login']);

@@ -51,9 +51,12 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCustomerRequest $request, Customer $customer)
+    public function update(UpdateCustomerRequest $request)
     {
-        //
+        $request->validated();
+        $customer = auth()->user();
+        $customer->update($request->all());
+        return response()->json($customer, 200);
     }
 
     /**
