@@ -13,6 +13,8 @@ class Product extends Model
   /** @use HasFactory<\Database\Factories\ProductFactory> */
   use HasFactory, SoftDeletes;
 
+  protected $with = ['images', 'category'];
+
   protected $fillable =
   [
     'name',

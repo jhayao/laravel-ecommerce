@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,7 @@ Route::group(['prefix' => 'categories'], function () {
 });
 
 Route::group(['prefix' => 'products'], function () {
+  Route::get('admin-list/{admin}', [ProductController::class, 'getProductList'])->name('api-product-list-admin');
   Route::get('list', [ProductController::class, 'getProductList'])->name('api-product-list');
   Route::post('create', [ProductController::class, 'create'])->name('api-categories.create');
   Route::get('details/{product}', [ProductController::class, 'show'])->name('product.show');
@@ -60,6 +62,14 @@ Route::group(['prefix' => 'customer', 'middleware' => 'auth:sanctum'], function 
     Route::put('update/{address}', [CustomerAddressController::class, 'updateAddress'])->name('customer.address.update');
     Route::delete('delete/{address}', [CustomerAddressController::class, 'deleteAddress'])->name('customer.address.delete');
   });
+});
+
+Route::group(['prefix' => 'checkout', 'middleware' => 'auth:sanctum'], function () {
+  Route::post('store', [OrderController::class, 'store'])->name('order.store');
+  Route::get('list', [OrderController::class, 'index'])->name('order.list');
+  Route::get('show/{order}', [OrderController::class, 'show'])->name('order.show');
+  Route::put('update/{order}', [OrderController::class, 'update'])->name('order.update');
+  Route::delete('delete/{order}', [OrderController::class, 'destroy'])->name('order.delete');
 });
 
 Route::prefix('customer')->group(function () {

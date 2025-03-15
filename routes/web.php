@@ -50,6 +50,8 @@ Route::group(['prefix' => 'products'], function () {
   Route::get('list', [ProductController::class, 'index'])->name('pages-product-list');
   Route::get('add', [ProductController::class, 'create'])->name('pages-product-add');
   Route::post('add', [ProductController::class, 'store'])->name('products.add');
+  Route::get('edit/{product}', [ProductController::class, 'edit'])->name('pages-product-edit');
+  Route::post('edit/{product}', [ProductController::class, 'update'])->name('products.update');
   Route::get('category', [CategoryController::class, 'index'])->name('pages-product-category');
   Route::post('category', [CategoryController::class, 'create'])->name('categories.create');
 });

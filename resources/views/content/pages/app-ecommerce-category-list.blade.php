@@ -95,6 +95,7 @@
             <div class="form-floating form-floating-outline">
               <select id="ecommerce-category-parent-category" class="select2 form-select" name="parent_id"
                       data-placeholder="Select parent category" data-allow-clear="true">
+                <option value="0">None</option>
                 @foreach($categories as $category)
                   <option value="{{ $category->id }}">{{ $category->title }}</option>
                 @endforeach

@@ -13,6 +13,7 @@ class Image extends Model
     use HasFactory;
 
     protected $fillable = ['image'];
+    protected $appends = ['raw_image'];
 
   public function products(): BelongsToMany
   {
@@ -22,6 +23,11 @@ class Image extends Model
   public function getImageAttribute($value): string
   {
     return asset($value);
+  }
+
+  public function getRawImageAttribute(): string
+  {
+    return $this->attributes['image'];
   }
 
 

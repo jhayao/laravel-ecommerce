@@ -57,7 +57,6 @@ class ProductController extends Controller
     ]);
 
     if ($request->has('productImage')) {
-      dump($request->input('productImage'));
       $product->images()->attach($request->input('productImage'));
     }
 
@@ -73,12 +72,14 @@ class ProductController extends Controller
     return response()->json($product->load('images'));
   }
 
+
   /**
    * Show the form for editing the specified resource.
    */
   public function edit(Product $product)
   {
-    //
+    $categories = Category::all();
+    return view('content.pages.app-ecommerce-product-add', ['categories' => $categories, 'product' => $product, 'edit' => true]);
   }
 
   /**
@@ -86,7 +87,24 @@ class ProductController extends Controller
    */
   public function update(UpdateProductRequest $request, Product $product)
   {
-    //
+    DB::beginTransaction();
+    if ($request->has('productImage')) {
+      $product->images()->sync($request->input('productImage'));
+    }
+
+    $product->update([
+      'name' => $request->input('productTitle'),
+      'price' => $request->input('productPrice'),
+      'description' => $request->input('description'),
+      'sku' => $request->input('productSku'),
+      'barcode' => $request->input('productBarcode'),
+      'discounted_price' => $request->input('productDiscountedPrice'),
+      'status' => $request->input('productStatus'),
+      'category_id' => $request->input('productCategory'),
+      'stock' => $request->input('productStocks')
+    ]);
+    DB::commit();
+    return response()->json(['success' => true, 'message' => 'Product updated successfully']);
   }
 
   /**
@@ -94,7 +112,6 @@ class ProductController extends Controller
    */
   public function destroy(Product $product): JsonResponse
   {
-    dump($product);
     $product->delete();
 
     return response()->json(['success' => true, 'message' => 'Product deleted successfully']);
@@ -104,12 +121,13 @@ class ProductController extends Controller
   {
     $message = [];
     try {
-      $image_path = $request->file('file')->store('public/images/products');
+      $file = $request->file('file');
+      $image_path = $file->store('public/images/products');
       $image_path = str_replace('public/', '', $image_path);
       $image = new Image();
       $image->image = $image_path;
       $image->save();
-      $message = ['success' => true, 'message' => 'Image uploaded successfully', 'image' => $image->image, 'id' => $image->id];
+      $message = ['success' => true, 'message' => 'Image uploaded successfully','original_name' => $file->getClientOriginalName(), 'image' => $image->raw_image, 'id' => $image->id];
     } catch (\Exception $e) {
       $message = ['success' => false, 'message' => $e->getMessage()];
     }
@@ -120,51 +138,33 @@ class ProductController extends Controller
   public function productImageDelete(Request $request): JsonResponse
   {
     $request->validate([
-      'image' => 'required|string'
+      'image' => 'required|string',
+      'image_id' => 'required|integer|exists:images,id'
     ]);
     $status = Storage::exists('public/' . $request->image) && Storage::delete('public/' . $request->image);
     if (!$status) {
       return response()->json(['message' => 'Image not found'], 404);
     }
+    Image::where('id', $request->id)->delete();
     return response()->json(['message' => 'Image deleted successfully'], 200);
   }
 
-  public function getProductList(): JsonResponse
+  public function getProductList(?string $admin = null): JsonResponse
   {
-//    $products = Product::selectRaw('
-//    products.id,
-//    products.description,
-//    products.name as product_name,
-//    products.sku,
-//    products.stock,
-//    products.price,
-//    products.discounted_price,
-//    CASE
-//        WHEN products.status = \'publish\' THEN 1
-//        WHEN products.status = \'scheduled\' THEN 2
-//        WHEN products.status = \'inactive\' THEN 3
-//        ELSE 4
-//    END as status,
-//    MIN(images.image) as image,  -- Use MIN() to select only one image
-//    products.category_id as category,
-//    categories.title as category_title
-//')
-//      ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
-//      ->leftJoin('product_images', 'products.id', '=', 'product_images.product_id')
-//      ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
-//      ->whereNull('products.deleted_at')  // Exclude soft-deleted products
-//      ->groupBy('products.id', 'products.description', 'products.name', 'products.sku', 'products.stock', 'products.price', 'products.discounted_price', 'products.status', 'products.category_id', 'categories.title')
-//      ->get();
-//    $product_data = ['data' => $products];
-
-
     $product_data = Product::join('categories', 'products.category_id', '=', 'categories.id')
-      ->select('products.*', 'categories.title as category', DB::raw('"sale" as label'), DB::raw('MIN(images.image) AS image'))
+      ->select('products.*',
+        'categories.title as category_title',
+        DB::raw('"sale" as label'),
+        DB::raw('MIN(images.image) AS image'),
+        DB::raw('CASE WHEN products.status = \'publish\' THEN 2 WHEN products.status = \'scheduled\' THEN 1 ELSE 3 END AS status_id'))
       ->leftJoin('product_images', 'products.id', '=', 'product_images.product_id')
       ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
       ->groupBy('products.id')
       ->get();
-
+    if ($admin) {
+      $data = ['data' => $product_data->load('images')];
+      return response()->json($data);
+    }
     return response()->json($product_data->load('images'));
   }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
@@ -11,7 +12,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,22 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+      return [
+        'productTitle' => ['required', 'string', 'max:255'],
+        'description' => ['sometimes', 'string'],
+        'productPrice' => ['required', 'numeric'],
+        'productCategory' => ['required', 'exists:categories,id'],
+        'productImage' => ['required', 'array' , 'min:1', 'max:5'],
+        'productStatus' => ['required', 'in:scheduled,inactive,publish'],
+        'productSku' => ['required', 'string', 'max:255'],
+        'productBarcode' => ['required', 'string', 'max:255'],
+        'productStocks' => ['required', 'numeric'],
+        'productImage.*' => ['required', 'exists:images,id']
+      ];
     }
+
+  public function failedValidation(Validator $validator)
+  {
+    return response()->json($validator->errors(), 422);
+  }
 }

@@ -99,7 +99,7 @@ function initializeDataTable() {
           orderable: false,
           searchable: false,
           responsivePriority: 4,
-          checkboxes: true,
+          // checkboxes: true,
           render: function () {
             return '<input type="checkbox" class="dt-checkboxes form-check-input">';
           },
@@ -182,7 +182,7 @@ function initializeDataTable() {
           render: function (data, type, full, meta) {
             return (
               '<div class="d-flex align-items-sm-center justify-content-sm-center">' +
-              '<button class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill"><i class="ri-edit-box-line ri-20px"></i></button>' +
+              '<button data-bs-toggle="offcanvas" data-bs-target="#offcanvasEcommerceCategoryList" class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill"><i class="ri-edit-box-line ri-20px"></i></button>' +
               '<button class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ri-more-2-line ri-20px"></i></button>' +
               '<div class="dropdown-menu dropdown-menu-end m-0">' +
               '<a href="javascript:0;" class="dropdown-item">View</a>' +

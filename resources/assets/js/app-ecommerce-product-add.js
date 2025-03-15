@@ -3,6 +3,7 @@
  */
 'use strict';
 let storedImageIds = []; // Global variable to store uploaded image IDs
+let storedImages = [];
 
 //Javascript to handle the e-commerce product add page
 
@@ -12,26 +13,27 @@ let storedImageIds = []; // Global variable to store uploaded image IDs
   const commentEditor = document.querySelector('.comment-editor');
 
   if (commentEditor) {
-    new Quill(commentEditor, {
+    const quil = new Quill(commentEditor, {
       modules: {
         toolbar: '.comment-toolbar'
       },
       placeholder: 'Product Description',
       theme: 'snow'
     });
+    if (typeof description !== "undefined")
+    {
+      console.log(description);
+      quil.root.innerHTML =  description;
+    }
   }
 
   // previewTemplate: Updated Dropzone default previewTemplate
 
   // ! Don't change it unless you really know what you are doing
 
-
-
   // ? Start your code from here
 
   // Basic Dropzone
-
-
 
   // Basic Tags
 
@@ -116,11 +118,11 @@ $(function () {
   }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
   const eCommerceProductAddForm = document.getElementById('eCommerceProductAddForm');
 
   if (!eCommerceProductAddForm) {
-    console.error("Form not found! Ensure it exists before initializing.");
+    console.error('Form not found! Ensure it exists before initializing.');
     return;
   }
 
@@ -133,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
       productPrice: { validators: { notEmpty: { message: 'Please enter Product Price' } } },
       productCategory: { validators: { notEmpty: { message: 'Please select Product Category' } } },
       productStocks: { validators: { notEmpty: { message: 'Please enter Product Stock' } } },
-      productStatus: { validators: { notEmpty: { message: 'Please select Product Status' } } },
+      productStatus: { validators: { notEmpty: { message: 'Please select Product Status' } } }
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -147,8 +149,6 @@ document.addEventListener("DOMContentLoaded", function () {
       autoFocus: new FormValidation.plugins.AutoFocus()
     }
   });
-
-
 
   const previewTemplate = `<div class="dz-preview dz-file-preview">
 <div class="dz-details">
@@ -168,68 +168,113 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>`;
 
   const dropzoneBasic = document.querySelector('#dropzone-basic');
-    const myDropzone = new Dropzone(dropzoneBasic, {
-      url: '/api/products/product-image-upload',
-      previewTemplate: previewTemplate,
-      parallelUploads: 1,
-      maxFilesize: 10,
-      acceptedFiles: '.jpg,.jpeg,.png,.gif',
-      addRemoveLinks: true,
-      maxFiles: 5,
-      init: function () {
-        this.on('addedfile', function (file) {
-          if (this.files.length > 5) {
-            this.removeFile(this.files[0]);
-          }
-        });
+  const myDropzone = new Dropzone(dropzoneBasic, {
+    url: '/api/products/product-image-upload',
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 5,
+    acceptedFiles: '.jpg,.jpeg,.png',
+    addRemoveLinks: true,
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    },
+    maxFiles: 5,
+    init: function () {
+      let dropzone = this;
+      if (typeof existingImages !== "undefined" && existingImages.length > 0) {
+        existingImages.forEach(function (file) {
+          console.log(storagePath + file.url);
+          let mockFile = { name: file.name, size: 123456, id: file.id };
 
-        this.on('success', function (file, response) {
-          console.log(response);
-          if (response.success) {
-            toastr.options = { positionClass: 'toast-top-left' };
-            toastr.success(response.message);
-            storedImageIds.push(response.id);
-          } else {
-            toastr.error(response.message);
-          }
-        });
+          dropzone.emit("addedfile", mockFile);
+          dropzone.emit("thumbnail", mockFile, storagePath + file.url);
+          dropzone.emit("complete", mockFile);
 
-        this.on('error', function (file, response) {
+          dropzone.files.push(mockFile);
+          storedImageIds.push(file.image_id);
+        });
+      }
+
+      this.on('addedfile', function (file) {
+        if (this.files.length > 5) {
+          this.removeFile(this.files[0]);
+        }
+      });
+
+      this.on('success', function (file, response) {
+        if (response.success) {
+          toastr.options = { positionClass: 'toast-top-left' };
+          toastr.success(response.message);
+          storedImageIds.push(response.id);
+          const imageJson = {
+            id: response.id,
+            original_name: response.original_name,
+            image: response.image
+          };
+          console.log(imageJson);
+          storedImages.push(imageJson);
+        } else {
           toastr.error(response.message);
-        });
+        }
+      });
 
-        this.on('removedfile', function (file) {
-          //call the delete image api
-          fetch('/api/products/product-image-delete', {
-            method: 'POST',
-            body: JSON.stringify({ image: eCommerceProductAddForm.querySelector('[name="productImage"]').value }),
-            headers: { 'Content-Type': 'application/json' }
-          })
-            .catch(error => {
+      this.on('error', function (file, response) {
+        toastr.error(response.message);
+      });
+
+      this.on('removedfile', function (file) {
+        console.log(file.name);
+        const exists = storedImages.find(item => item.original_name === file.name);
+        let oldImage = null;
+        if (typeof existingImages !== "undefined" && existingImages.length > 0) {
+           oldImage = existingImages.find(item => item.name === file.name);
+           if (oldImage) {
+             storedImageIds = storedImageIds.filter(id => id !== oldImage.image_id);
+           }
+        }
+        if (exists) {
+          const productImageElement = exists.image
+          if (productImageElement) {
+            // call the delete image api
+            fetch('/api/products/product-image-delete', {
+              method: 'POST',
+              body: JSON.stringify({ image: productImageElement , image_id: exists.id }),
+              dataType: 'json',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+              },
+            }).then(response => {
+                storedImageIds = storedImageIds.filter(id => id !== exists.id);
+            }).catch(error => {
               console.error('Error:', error);
               alert('An unexpected error occurred.');
             });
-        });
-      }
-    });
-
-
+          } else {
+            console.error('Product image element not found.');
+          }
+        }
+      });
+    }
+  });
 
   fv.on('core.form.valid', function () {
     const submitButton = eCommerceProductAddForm.querySelector('[type="submit"]');
 
     if (!submitButton) {
-      console.error("Submit button not found!");
+      console.error('Submit button not found!');
       return;
     }
 
     submitButton.disabled = true;
 
     let formData = new FormData(eCommerceProductAddForm);
-    storedImageIds.forEach((imageId) => {
+    storedImageIds.forEach(imageId => {
+      console.log(storedImageIds);
       formData.append('productImage[]', imageId);
-    })
-
+    });
+    let description = document.querySelector('#ecommerce-category-description .ql-editor').innerHTML;
+    formData.append('description', description);
     fetch(eCommerceProductAddForm.action, {
       method: eCommerceProductAddForm.method,
       body: formData,
@@ -242,7 +287,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.success) {
           toastr.success(data.message);
           fv.resetForm(true);
+          storedImageIds = [];
+          storedImages = []
+          document.querySelector('#ecommerce-category-description .ql-editor').innerHTML = '';
           myDropzone.removeAllFiles();
+          location.reload();
         } else {
           toastr.error(data.message);
         }
@@ -255,7 +304,4 @@ document.addEventListener("DOMContentLoaded", function () {
         submitButton.disabled = false;
       });
   });
-
-
 });
-

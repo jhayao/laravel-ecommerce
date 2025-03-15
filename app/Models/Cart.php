@@ -28,6 +28,6 @@ class Cart extends Model
 
   public function getTotalAttribute(): float
   {
-    return $this->products->sum(fn($product) => $product->price * $product->pivot->quantity);
+    return $this->products->sum(fn($product) => ($product->discounted_price ?? $product->price) * $product->pivot->quantity);
   }
 }
