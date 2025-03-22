@@ -34,6 +34,7 @@ class OrderController extends Controller
   {
     $request->validated();
     $customer = auth()->user();
+
     DB::beginTransaction();
     try {
 
@@ -47,7 +48,7 @@ class OrderController extends Controller
       ]);
 
       $order = Order::create([
-        'user_id' => $customer->id,
+        'customer_id' => $customer->id,
         'order_number' => uniqid('ORD-'),
         'status' => 'pending',
         'total' => $cart->total,
@@ -65,7 +66,15 @@ class OrderController extends Controller
       }));
 
 
-      $order->items()->createMany($request->items);
+      $order->items()->createMany($cart->products->map(function ($product) {
+        return [
+          'product_id' => $product->id,
+          'quantity' => $product->pivot->quantity,
+          'price' => $product->price,
+        ];
+      }));
+
+      $cart->products()->detach();
 
       DB::commit();
     } catch (\Exception $e) {
@@ -106,5 +115,11 @@ class OrderController extends Controller
   public function destroy(Order $order)
   {
     //
+  }
+
+  public function getOrderList()
+  {
+    $orders = Order::all();
+    return response()->json(['data' =>$orders]);
   }
 }

@@ -52,6 +52,7 @@
             <th>Categories</th>
             <th class="text-nowrap text-sm-end">Total Products &nbsp;</th>
             <th class="text-nowrap text-sm-end">Total Earning</th>
+            <th class="text-nowrap text-sm-end">Status</th>
             <th class="text-lg-center">Actions</th>
           </tr>
           </thead>
@@ -68,7 +69,7 @@
       </div>
       <!-- Offcanvas Body -->
       <div class="offcanvas-body border-top">
-        <form class="pt-0" id="eCommerceCategoryListForm" method="POST">
+        <form class="pt-0" id="eCommerceCategoryListForm" action="{{ route('categories.create') }}" method="POST">
           @csrf
           <!-- Title -->
 
@@ -130,7 +131,6 @@
               <select id="ecommerce-category-status" class="select2 form-select"
                       data-placeholder="Select category status" name="status">
                 <option value="">Select category status</option>
-                <option value="scheduled">Scheduled</option>
                 <option value="publish">Publish</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -139,7 +139,7 @@
           </div>
           <!-- Submit and reset -->
           <div>
-            <button type="submit" class="btn btn-primary me-3 data-submit">Add</button>
+            <button type="submit" id="frmSubmit" class="btn btn-primary me-3 data-submit">Add</button>
             <button type="reset" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
           </div>
         </form>

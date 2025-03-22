@@ -17,7 +17,7 @@ return new class extends Migration {
       $table->string('description')->nullable();
       $table->string('image')->nullable();
       $table->foreignId('parent_id')->nullable()->constrained('categories')->onDelete('cascade');
-      $table->enum('status', ['scheduled', 'publish', 'inactive'])->default('scheduled'); // Use ENUM instead of CHECK
+      $table->enum('status', ['deleted', 'publish', 'inactive'])->default('publish'); // Use ENUM instead of CHECK
       $table->timestamps();
     });
 

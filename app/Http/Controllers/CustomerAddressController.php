@@ -11,7 +11,10 @@ class CustomerAddressController extends Controller
   {
     $request->validated();
     $customer = auth()->user();
-    $customer->address()->create($request->all());
-    return response()->json($customer->address, 201);
+    $customer->address()->updateOrCreate(
+      ['customer_id' => $customer->id], // Condition to check existing record
+      $request->all() // Data to update or insert
+    );
+    return response()->json(['success' => true, 'message' => 'Address saved successfully']);
   }
 }

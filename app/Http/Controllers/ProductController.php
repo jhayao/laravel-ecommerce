@@ -18,6 +18,10 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
+
+
+
+
   /**
    * Display a listing of the resource.
    */
@@ -72,6 +76,14 @@ class ProductController extends Controller
     return response()->json($product->load('images'));
   }
 
+  public function restore(int $product_id): JsonResponse
+  {
+    $product = Product::withTrashed()->findOrFail($product_id);
+    $product->restore();
+    $product->status = 'publish';
+    $product->save();
+    return response()->json(['success' => true, 'message' => 'Product restored successfully']);
+  }
 
   /**
    * Show the form for editing the specified resource.
@@ -79,6 +91,7 @@ class ProductController extends Controller
   public function edit(Product $product)
   {
     $categories = Category::all();
+//    $product = Product::withTrashed()->findOrFail($product_id);
     return view('content.pages.app-ecommerce-product-add', ['categories' => $categories, 'product' => $product, 'edit' => true]);
   }
 
@@ -112,6 +125,8 @@ class ProductController extends Controller
    */
   public function destroy(Product $product): JsonResponse
   {
+    $product->status = 'deleted';
+    $product->save();
     $product->delete();
 
     return response()->json(['success' => true, 'message' => 'Product deleted successfully']);
@@ -127,7 +142,7 @@ class ProductController extends Controller
       $image = new Image();
       $image->image = $image_path;
       $image->save();
-      $message = ['success' => true, 'message' => 'Image uploaded successfully','original_name' => $file->getClientOriginalName(), 'image' => $image->raw_image, 'id' => $image->id];
+      $message = ['success' => true, 'message' => 'Image uploaded successfully', 'original_name' => $file->getClientOriginalName(), 'image' => $image->raw_image, 'id' => $image->id];
     } catch (\Exception $e) {
       $message = ['success' => false, 'message' => $e->getMessage()];
     }
@@ -151,17 +166,22 @@ class ProductController extends Controller
 
   public function getProductList(?string $admin = null): JsonResponse
   {
-    $product_data = Product::join('categories', 'products.category_id', '=', 'categories.id')
+    $product_data = Product::withTrashed()->join('categories', 'products.category_id', '=', 'categories.id')
       ->select('products.*',
         'categories.title as category_title',
         DB::raw('"sale" as label'),
         DB::raw('MIN(images.image) AS image'),
-        DB::raw('CASE WHEN products.status = \'publish\' THEN 2 WHEN products.status = \'scheduled\' THEN 1 ELSE 3 END AS status_id'))
+        DB::raw('CASE WHEN products.status = \'publish\' THEN 2 WHEN products.status = \'deleted\' THEN 1 ELSE 3 END AS status_id'))
       ->leftJoin('product_images', 'products.id', '=', 'product_images.product_id')
       ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
       ->groupBy('products.id')
       ->get();
     if ($admin) {
+      $product_data = $product_data->map(function ($product) {
+        $product->description = strip_tags($product->description);
+        $product->description = strlen($product->description) > 50 ? substr($product->description, 0, 50) . '...' : $product->description;
+        return $product;
+      });
       $data = ['data' => $product_data->load('images')];
       return response()->json($data);
     }

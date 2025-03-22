@@ -55,9 +55,9 @@ class CategoryController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(Category $category)
+  public function edit(Category $category): JsonResponse
   {
-    //
+      return response()->json($category);
   }
 
   /**
@@ -65,7 +65,14 @@ class CategoryController extends Controller
    */
   public function update(UpdateCategoryRequest $request, Category $category)
   {
-    //
+    $request->validated();
+    if($request->has('category_image')) {
+      $image_path = $request->file('category_image')->store('public/images');
+      $image_path = str_replace('public/', '', $image_path);
+      $request->merge(['image' => $image_path]);
+    }
+    $category->update($request->all());
+    return response()->json(['success' => true, 'message' => 'Category updated successfully']);
   }
 
   /**
@@ -73,8 +80,35 @@ class CategoryController extends Controller
    */
   public function destroy(Category $category): JsonResponse
   {
+    $category->status = 'deleted';
+    $category->save();
+    $products = $category->products()->get(); // Get the products as a collection
+    $products->each(function ($product) {
+      $product->status = 'deleted'; // Update the status
+      $product->save(); // Save changes
+      $product->delete(); // Then, delete the product
+    });
+
     $deleted = $category->delete();
     return response()->json(['success' => $deleted, 'message' => 'Category deleted successfully']);
+  }
+
+  public function restore(int $id): JsonResponse
+  {
+    $category = Category::withTrashed()->find($id);
+    if ($category->trashed()) {
+      $category->restore(); // Restore first
+      $category->status = 'publish'; // Update status
+      $category->products()->restore(); // Restore products
+      $products = $category->products()->get(); // Get the products as a collection
+      foreach ($products as $product) {
+        $product->status = 'publish'; // Update status
+        $product->save(); // Save changes
+      }
+      $category->save(); // Save changes
+      return response()->json(['success' => true, 'message' => 'Category restored successfully']);
+    }
+    return response()->json(['success' => false, 'message' => 'Category not found']);
   }
 
   public function getCategories()
@@ -92,6 +126,7 @@ class CategoryController extends Controller
         'categories.image as cat_image',
         'categories.title as categories',
         'categories.description as category_detail',
+        'categories.status as status',
         DB::raw('COALESCE(SUM(order_items.quantity * order_items.price), 0) as total_earnings'), // Return 0 if no orders
         DB::raw('COUNT(products.id) as total_products')
       )

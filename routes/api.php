@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,9 @@ Route::get('/user', function (Request $request) {
 Route::group(['prefix' => 'categories'], function () {
   Route::get('list', [CategoryController::class, 'getCategories'])->name('api-category-list');
   Route::post('create', [CategoryController::class, 'create'])->name('category.create');
+  Route::get('category-details/{category}', [CategoryController::class, 'edit'])->name('category.edit');
   Route::delete('delete/{category}', [CategoryController::class, 'destroy'])->name('category.delete');
+  Route::post('restore/{category}', [CategoryController::class, 'restore'])->name('category.restore');
   Route::get('category-title', [CategoryController::class, 'getCategoriesTitle'])->name('category.title');
 });
 
@@ -30,6 +33,7 @@ Route::group(['prefix' => 'products'], function () {
   Route::delete('delete/{product}', [ProductController::class, 'destroy'])->name('product.delete');
   Route::post('product-image-upload', [ProductController::class, 'productImageUpload'])->name('product.image.upload');
   Route::post('product-image-delete', [ProductController::class, 'productImageDelete'])->name('product.image.delete');
+  Route::post('restore/{product}', [ProductController::class, 'restore'])->name('product.restore');
 });
 
 Route::group(['prefix' => 'shop'], function () {
@@ -56,7 +60,7 @@ Route::group(['prefix' => 'customer', 'middleware' => 'auth:sanctum'], function 
   Route::get('profile', [CustomerAuthController::class, 'profile'])->name('customer.profile');
 
   Route::group(['prefix' => 'address'], function () {
-    Route::post('store', [CustomerAddressController::class, 'storeAddress'])->name('customer.address.store');
+    Route::post('', [CustomerAddressController::class, 'storeAddress'])->name('customer.address.store');
     Route::get('list', [CustomerAddressController::class, 'getAddressList'])->name('customer.address.list');
     Route::get('show/{address}', [CustomerAddressController::class, 'showAddress'])->name('customer.address.show');
     Route::put('update/{address}', [CustomerAddressController::class, 'updateAddress'])->name('customer.address.update');
@@ -70,6 +74,11 @@ Route::group(['prefix' => 'checkout', 'middleware' => 'auth:sanctum'], function 
   Route::get('show/{order}', [OrderController::class, 'show'])->name('order.show');
   Route::put('update/{order}', [OrderController::class, 'update'])->name('order.update');
   Route::delete('delete/{order}', [OrderController::class, 'destroy'])->name('order.delete');
+});
+
+Route::group(['prefix'=> 'order'], function () {
+  Route::get('list', [OrderController::class, 'getOrderList'])->name('order.list');
+  Route::get('details/{order}', [OrderItemController::class, 'getOrderDetails'])->name('order.details');
 });
 
 Route::prefix('customer')->group(function () {

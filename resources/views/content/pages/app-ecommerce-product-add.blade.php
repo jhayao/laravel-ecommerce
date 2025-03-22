@@ -232,7 +232,7 @@
                           data-placeholder="Select Status">
                     <option value="">Select Status</option>
                     <option value="publish" @selected($product->status === 'publish')>Published</option>
-                    <option value="scheduled" @selected($product->status === 'scheduled')>Scheduled</option>
+{{--                    <option value="scheduled" @selected($product->status === 'scheduled')>Scheduled</option>--}}
                     <option value="inactive" @selected($product->status === 'inactive')>Inactive</option>
                   </select>
                   <label for="status-org">Status</label>

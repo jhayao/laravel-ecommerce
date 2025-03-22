@@ -26,6 +26,10 @@ class Customer extends Model
     'password'
   ];
 
+  protected $with = ['cart', 'address'];
+
+  protected $appends = ['full_name'];
+
   protected $hidden = [
     'password',
     'remember_token',
@@ -62,6 +66,16 @@ class Customer extends Model
   public function shipping_address(): HasOne
   {
     return $this->hasOne(CustomerAddress::class)->where('type', 'shipping');
+  }
+
+  public function getFullNameAttribute() : string
+  {
+    return ucfirst("{$this->first_name} {$this->middle_name} {$this->last_name}");
+  }
+
+  public function getProfilePictureAttribute($value): string
+  {
+    return asset($value);
   }
 
 }

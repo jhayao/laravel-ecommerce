@@ -15,6 +15,8 @@ class Product extends Model
 
   protected $with = ['images', 'category'];
 
+  protected $appends = ['default_image', 'description_clean'];
+
   protected $fillable =
   [
     'name',
@@ -40,5 +42,17 @@ class Product extends Model
   public function images(): BelongsToMany
   {
     return $this->belongsToMany(Image::class, 'product_images', 'product_id', 'image_id');
+  }
+
+  public function getDescriptionCleanAttribute(): string
+  {
+    $limit = 30;
+    $cleanDescription = substr(strip_tags($this->description), 0, $limit);
+    return strlen(strip_tags($this->description)) > $limit ? $cleanDescription . '...' : $cleanDescription;
+  }
+
+  public function getDefaultImageAttribute(): ?string
+  {
+    return $this->images->first()->image;
   }
 }

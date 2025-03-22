@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
@@ -16,7 +17,7 @@ class Order extends Model
      * @var array<string>
      */
     protected $fillable = [
-            'user_id',
+            'customer_id',
             'total',
             'status',
             'order_number',
@@ -24,14 +25,23 @@ class Order extends Model
             'payment_id',
         ];
 
-    public function user()
+    protected $appends = ['status_id'];
+
+    protected $with = ['customer', 'items', 'payment'];
+
+    public function customer()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class);
     }
 
     public function getTotalQuantityAttribute()
@@ -59,5 +69,15 @@ class Order extends Model
         return ucfirst($value);
     }
 
+    public function getStatusIdAttribute(): int
+    {
+      $value = $this->status;
+      return match (Str::lower($value)) {
+        'pending' => 4,
+        'processing' => 3,
+        'completed' => 2,
+        default => 1,
+      };
+    }
 
 }

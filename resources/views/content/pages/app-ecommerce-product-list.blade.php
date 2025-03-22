@@ -107,7 +107,7 @@
     </div>
   </div>
   <div class="card-datatable table-responsive">
-    <table class="datatables-products table">
+    <table class="datatables-products table productTable">
       <thead>
         <tr>
           <th></th>
@@ -126,3 +126,4 @@
 </div>
 
 @endsection
+

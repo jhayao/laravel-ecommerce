@@ -20,10 +20,27 @@ class CustomerAddress extends Model
         'is_default',
     ];
 
+    protected $appends = ['full_address'];
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
+
+  public function getFullAddressAttribute(): string
+  {
+    // Filter out null or empty values to avoid unnecessary commas
+    $addressParts = array_filter([
+      $this->street_address,
+      $this->city,
+      $this->province,
+      $this->country,
+      $this->zip_code
+    ]);
+
+    // Convert to a properly formatted string
+    return ucwords(implode('<br>', $addressParts));
+  }
 
 }

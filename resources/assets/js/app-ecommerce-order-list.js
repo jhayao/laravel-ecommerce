@@ -23,10 +23,10 @@ $(function () {
 
   var dt_order_table = $('.datatables-order'),
     statusObj = {
-      1: { title: 'Dispatched', class: 'bg-label-warning' },
-      2: { title: 'Delivered', class: 'bg-label-success' },
-      3: { title: 'Out for Delivery', class: 'bg-label-primary' },
-      4: { title: 'Ready to Pickup', class: 'bg-label-info' }
+      1: { title: 'Cancelled', class: 'bg-label-success' },
+      2: { title: 'Completed', class: 'bg-label-primary' },
+      3: { title: 'Processing', class: 'bg-label-info' },
+      4: { title: 'Pending', class: 'bg-label-secondary' }
     },
     paymentObj = {
       1: { title: 'Paid', class: 'text-success' },
@@ -39,15 +39,15 @@ $(function () {
 
   if (dt_order_table.length) {
     var dt_products = dt_order_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-customer-order.json', // JSON file to add data
+      ajax: '/api/order/list', // JSON file to add data
       columns: [
         // columns according to JSON
         { data: 'id' },
         { data: 'id' },
-        { data: 'order' },
-        { data: 'date' },
+        { data: 'order_number' },
+        { data: 'created_at' },
         { data: 'customer' }, //email //avatar
-        { data: 'payment' },
+        { data: 'payment.status' },
         { data: 'status' },
         { data: 'method' }, //method_number
         { data: '' }
@@ -80,10 +80,10 @@ $(function () {
           // Order ID
           targets: 2,
           render: function (data, type, full, meta) {
-            var $order_id = full['order'];
+            var $order_id = full['order_number'];
             // Creates full output for row
             var $row_output =
-              '<a href="' + baseUrl + 'app/ecommerce/order/details"><span>#' + $order_id + '</span></a>';
+              '<a href="' + baseUrl + 'orders/details/' + $order_id + '"><span>#' + $order_id + '</span></a>';
             return $row_output;
           }
         },
@@ -91,15 +91,18 @@ $(function () {
           // Date and Time
           targets: 3,
           render: function (data, type, full, meta) {
-            var date = new Date(full.date); // convert the date string to a Date object
-            var timeX = full['time'].substring(0, 5);
+            console.log(full);
+            var date = new Date(full.created_at); // convert the date string to a Date object
             var formattedDate = date.toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
-              year: 'numeric',
-              time: 'numeric'
+              year: 'numeric'
             });
-            return '<span class="text-nowrap">' + formattedDate + ', ' + timeX + '</span>';
+            var formattedTime = date.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit'
+            });
+            return '<span class="text-nowrap">' + formattedDate + ', ' + formattedTime + '</span>';
           }
         },
         {
@@ -107,19 +110,19 @@ $(function () {
           targets: 4,
           responsivePriority: 1,
           render: function (data, type, full, meta) {
-            var $name = full['customer'],
-              $email = full['email'],
-              $avatar = full['avatar'];
+            var $name = full.customer.full_name,
+              $email = full.customer.email,
+              $avatar = full.customer.profile_picture;
             if ($avatar) {
               // For Avatar image
               var $output =
-                '<img src="' + assetsPath + 'img/avatars/' + $avatar + '" alt="Avatar" class="rounded-circle">';
+                '<img src="' + $avatar + '" alt="Avatar" class="rounded-circle">';
             } else {
               // For Avatar badge
               var stateNum = Math.floor(Math.random() * 6);
               var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
               var $state = states[stateNum],
-                $name = full['customer'],
+                $name = full['customer.full_name'],
                 $initials = $name.match(/\b\w/g) || [];
               $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
               $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
@@ -169,7 +172,7 @@ $(function () {
           // Status
           targets: -3,
           render: function (data, type, full, meta) {
-            var $status = full['status'];
+            var $status = full['status_id'];
 
             return (
               '<span class="badge px-2 rounded-pill ' +

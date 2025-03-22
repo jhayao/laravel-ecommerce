@@ -22,6 +22,10 @@ class StoreCategoryRequest extends FormRequest
    */
   public function rules(): array
   {
+    if ($this->has('parent_id') && $this->parent_id == 0) {
+        $this->merge(['parent_id' => null]);
+    }
+
     return [
       'title' => ['required', 'string', 'max:255'],
       'description' => ['required', 'string', 'max:255'],

@@ -29,7 +29,16 @@ class CustomerAddressStoreRequest extends FormRequest
       "city" => ["required", "string", "max:255"],
       "province" => ["required", "string", "max:255"],
       "zip_code" => ["required", "string", "max:255"],
-      "email" => ["required", "email", "max:255"],
+//      "email" => ["required", "email", "max:255"],
     ];
+  }
+
+  public function withValidator($validator)
+  {
+    $validator->after(function ($validator) {
+      $this->merge([
+        'country' => 'Philippines',
+      ]);
+    });
   }
 }

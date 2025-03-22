@@ -53,12 +53,18 @@ Route::group(['prefix' => 'products'], function () {
   Route::get('edit/{product}', [ProductController::class, 'edit'])->name('pages-product-edit');
   Route::post('edit/{product}', [ProductController::class, 'update'])->name('products.update');
   Route::get('category', [CategoryController::class, 'index'])->name('pages-product-category');
-  Route::post('category', [CategoryController::class, 'create'])->name('categories.create');
+
+});
+//Categories
+Route::group(['prefix' => 'category'], function () {
+  Route::post('', [CategoryController::class, 'create'])->name('categories.create');
+  Route::post('update/{category}', [CategoryController::class, 'update'])->name('categories.edit');
+  Route::get('list', [CategoryController::class, 'index'])->name('pages-category-list');
 });
 //Orders
 Route::group(['prefix' => 'orders'], function () {
   Route::get('list', [EcommerceOrderList::class, 'index'])->name('pages-order-list');
-  Route::get('details', [EcommerceOrderDetails::class, 'index'])->name('pages-order-details');
+  Route::get('details/{order}', [EcommerceOrderDetails::class, 'index'])->name('pages-order-details');
 });
 //Customers
 Route::group(['prefix' => 'customers'], function () {

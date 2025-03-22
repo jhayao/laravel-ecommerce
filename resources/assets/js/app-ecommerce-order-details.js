@@ -10,18 +10,22 @@ $(function () {
   // Variable declaration for table
 
   var dt_details_table = $('.datatables-order-details');
+  var subtotal = 0; // Variable to store subtotal
+  var discount = 0; // Discount is set to 0
+  var tax = 0; // Tax is set to 0
+  var total = 0; // Variable to store total
 
   // E-commerce Products datatable
   if (dt_details_table.length) {
     var dt_products = dt_details_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-order-details.json', // JSON file to add data
+      ajax: '/api/order/details/' + orderNumber, // JSON file to add data
       columns: [
         // columns according to JSON
         { data: 'id' },
         { data: 'id' },
-        { data: 'product_name' },
+        { data: 'product.name' },
         { data: 'price' },
-        { data: 'qty' },
+        { data: 'quantity' },
         { data: '' }
       ],
       columnDefs: [
@@ -55,19 +59,12 @@ $(function () {
           searchable: false,
           orderable: false,
           render: function (data, type, full, meta) {
-            var $name = full['product_name'],
-              $product_brand = full['product_info'],
-              $image = full['image'];
+            var $name = full.product.name,
+              $product_brand = full.product.description_clean,
+              $image = full.product.default_image;
             if ($image) {
               // For Product image
-              var $output =
-                '<img src="' +
-                assetsPath +
-                'img/products/' +
-                $image +
-                '" alt="product-' +
-                $name +
-                '" class="rounded-2">';
+              var $output = '<img src="' + $image + '" alt="product-' + $name + '" class="rounded-2">';
             } else {
               // For Product badge
               var stateNum = Math.floor(Math.random() * 6);
@@ -105,7 +102,7 @@ $(function () {
           orderable: false,
           render: function (data, type, full, meta) {
             var $price = full['price'];
-            var $output = '<span>$' + $price + '</span>';
+            var $output = '<span>₱' + $price + '</span>';
             return $output;
           }
         },
@@ -115,7 +112,7 @@ $(function () {
           searchable: false,
           orderable: false,
           render: function (data, type, full, meta) {
-            var $qty = full['qty'];
+            var $qty = full['quantity'];
             var $output = '<span>' + $qty + '</span>';
             return $output;
           }
@@ -126,8 +123,9 @@ $(function () {
           searchable: false,
           orderable: false,
           render: function (data, type, full, meta) {
-            var $total = full['qty'] * full['price'];
-            var $output = '<span>$' + $total + '</span>';
+            var $total = full['quantity'] * full['price'];
+            subtotal += $total; // Accumulate subtotal
+            var $output = '<span>₱' + $total.toFixed(2) + '</span>';
             return $output;
           }
         }
@@ -166,6 +164,16 @@ $(function () {
             return data ? $('<table class="table"/><tbody />').append(data) : false;
           }
         }
+      },
+      initComplete: function () {
+        // Calculate total
+        total = subtotal - discount + tax;
+
+        // Update the values in the Blade file
+        $('.order-calculations .d-flex:nth-child(1) h6.mb-0').text('₱' + subtotal.toFixed(2)); // Subtotal
+        $('.order-calculations .d-flex:nth-child(2) h6.mb-0').text('₱' + discount.toFixed(2)); // Discount
+        $('.order-calculations .d-flex:nth-child(3) h6.mb-0').text('₱' + tax.toFixed(2)); // Tax
+        $('.order-calculations .d-flex:nth-child(4) h6.mb-0').text('₱' + total.toFixed(2)); // Total
       }
     });
   }
