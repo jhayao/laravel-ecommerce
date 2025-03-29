@@ -79,6 +79,7 @@ Route::group(['prefix' => 'checkout', 'middleware' => 'auth:sanctum'], function 
 Route::group(['prefix'=> 'order'], function () {
   Route::get('list', [OrderController::class, 'getOrderList'])->name('order.list');
   Route::get('details/{order}', [OrderItemController::class, 'getOrderDetails'])->name('order.details');
+  Route::put('update-status/{order}', [OrderController::class, 'updateOrderStatus'])->name('order.update-status');
 });
 
 Route::prefix('customer')->group(function () {
@@ -94,3 +95,4 @@ Route::prefix('customer')->group(function () {
 
 Route::post('/register', [CustomerAuthController::class, 'register']);
 Route::post('/login', [CustomerAuthController::class, 'login']);
+

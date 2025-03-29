@@ -11,7 +11,6 @@ class EcommerceOrderDetails extends Controller
   public function index(string $order_number)
   {
     $order = Order::where('order_number', $order_number)->first();
-
     return view('content.pages.app-ecommerce-order-details', compact('order'));
   }
 

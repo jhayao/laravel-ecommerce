@@ -32,7 +32,6 @@ $(function () {
       1: { title: 'Paid', class: 'text-success' },
       2: { title: 'Pending', class: 'text-warning' },
       3: { title: 'Failed', class: 'text-danger' },
-      4: { title: 'Cancelled', class: 'text-secondary' }
     };
 
   // E-commerce Products datatable
@@ -153,7 +152,8 @@ $(function () {
         {
           targets: 5,
           render: function (data, type, full, meta) {
-            var $payment = full['payment'],
+
+            var $payment = full.payment.payment_status_id,
               $paymentObj = paymentObj[$payment];
             if ($paymentObj) {
               return (
@@ -187,8 +187,9 @@ $(function () {
           // Payment Method
           targets: -2,
           render: function (data, type, full, meta) {
-            var $method = full['method'];
-            var $method_number = full['method_number'];
+            console.log(full)
+            var $method = full.payment_method;
+            var $method_number = 'Cash on Delivery';
 
             if ($method == 'paypal') {
               $method_number = '@gmail.com';
@@ -202,7 +203,7 @@ $(function () {
               '.png" alt="' +
               $method +
               '" class="me-2" width="29">' +
-              '<span><i class="ri-more-line"></i>' +
+              '<span><i class=""></i>' +
               $method_number +
               '</span>' +
               '</div>'

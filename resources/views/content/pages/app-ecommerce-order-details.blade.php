@@ -44,14 +44,25 @@
 
     <div class="d-flex flex-column justify-content-center">
       <div class="d-flex align-items-center mb-1">
-        <h5 class="mb-0">Order #32543</h5>
-        <span class="badge bg-label-success me-2 ms-2 rounded-pill">Paid</span>
-        <span class="badge bg-label-info rounded-pill">Ready to Pickup</span>
+        <h5 class="mb-0">Order #{{ $order->order_number }}</h5>
+        @php
+
+        @endphp
+        @if (strtolower($order->status) === 'pending')
+          <span class="badge bg-label-warning me-2 ms-2 rounded-pill">{{ $order->status }}</span>
+        @elseif (strtolower($order->status) === 'completed')
+          <span class="badge bg-label-success me-2 ms-2 rounded-pill">{{ $order->status }}</span>
+        @elseif (strtolower($order->status) === 'cancelled')
+          <span class="badge bg-label-danger me-2 ms-2 rounded-pill">{{ $order->status }}</span>
+        @endif
+{{--        <span class="badge bg-label-info rounded-pill">{{ $order->payment->status }}</span>--}}
       </div>
-      <p class="mb-0">Aug 17, <span id="orderYear"></span>, 5:48 (ET)</p>
+      <p class="mb-0">{{ $order->created_at->format('M d, Y, h:i A (T)') }}</p>
     </div>
     <div class="d-flex align-content-center flex-wrap gap-2">
       <button class="btn btn-outline-danger delete-order">Delete Order</button>
+      {{-- data-bs-toggle="modal" data-bs-target="#updateOrderStatus" --}}
+      <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateOrderStatus2">Update Status</button>
     </div>
   </div>
 
@@ -62,7 +73,7 @@
       <div class="card mb-6">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h5 class="card-title m-0">Order details</h5>
-          <h6 class="m-0"><a href=" javascript:void(0)">Edit</a></h6>
+{{--          <h6 class="m-0"><a href=" javascript:void(0)">Edit</a></h6>--}}
         </div>
         <div class="card-datatable table-responsive pb-5">
           <table class="datatables-order-details table">
@@ -190,7 +201,7 @@
           </div>
           <div class="d-flex justify-content-between">
             <h6 class="mb-1">Contact info</h6>
-{{--            <h6 class="mb-1"><a href=" javascript:;" data-bs-toggle="modal" data-bs-target="#editUser">Edit</a></h6>--}}
+           {{-- <h6 class="mb-1"><a href=" javascript:;" data-bs-toggle="modal" data-bs-target="#updateOrderStatus2">Edit</a></h6> --}}
           </div>
           <p class="mb-1">Email: {{ $order->customer->email }}</p>
           <p class="mb-0">Mobile: {{ $order->customer->phone_number }}</p>
@@ -214,8 +225,9 @@
   </div>
 
   <!-- Modals -->
-  @include('_partials/_modals/modal-edit-user')
-  @include('_partials/_modals/modal-add-new-address')
+  {{-- @include('_partials/_modals/modal-edit-user')
+  @include('_partials/_modals/modal-add-new-address') --}}
+  @include('_partials._modals.modal-update-order-status', ['order' => $order])
 
 @endsection
 

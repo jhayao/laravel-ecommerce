@@ -44,6 +44,11 @@ class Order extends Model
         return $this->belongsTo(Payment::class);
     }
 
+    public function shipment()
+    {
+        return $this->hasMany(Shipment::class);
+    }
+
     public function getTotalQuantityAttribute()
     {
         return $this->items->sum('quantity');

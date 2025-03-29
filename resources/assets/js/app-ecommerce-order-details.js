@@ -7,6 +7,20 @@
 // Datatable (jquery)
 
 $(function () {
+  // Ensure Bootstrap modal is initialized
+  const updateOrderStatusModal = document.getElementById('updateOrderStatus');
+  if (updateOrderStatusModal) {
+    const modalInstance = new bootstrap.Modal(updateOrderStatusModal, {
+      backdrop: 'static', // Prevent closing the modal by clicking outside
+      keyboard: false // Disable closing the modal with the keyboard
+    });
+
+    // Example: Open the modal programmatically
+    $('#updateStatusModal').on('click', function () {
+      modalInstance.show();
+    });
+  }
+
   // Variable declaration for table
 
   var dt_details_table = $('.datatables-order-details');
@@ -225,13 +239,4 @@ $(function () {
       });
     };
   }
-
-  //for custom year
-  function getCurrentYear() {
-    var currentYear = new Date().getFullYear();
-    return currentYear;
-  }
-
-  var year = getCurrentYear();
-  document.getElementById('orderYear').innerHTML = year;
 })();

@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
-use App\Models\OrderItem;
 use App\Models\Payment;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -30,7 +31,7 @@ class OrderController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(StoreOrderRequest $request)
+  public function store(StoreOrderRequest $request): JsonResponse
   {
     $request->validated();
     $customer = auth()->user();
@@ -65,6 +66,12 @@ class OrderController extends Controller
         ];
       }));
 
+      //add shippment details
+      $order->shipment()->create([
+        'status' => 'pending',
+        'tracking_number' => uniqid('TRK-'),
+      ]);
+
 
       $order->items()->createMany($cart->products->map(function ($product) {
         return [
@@ -77,6 +84,7 @@ class OrderController extends Controller
       $cart->products()->detach();
 
       DB::commit();
+      return response()->json(['message' => 'Order created successfully', 'data' => $order], 201);
     } catch (\Exception $e) {
       DB::rollBack();
 
@@ -120,6 +128,45 @@ class OrderController extends Controller
   public function getOrderList()
   {
     $orders = Order::all();
-    return response()->json(['data' =>$orders]);
+    return response()->json(['data' => $orders]);
+  }
+
+  public function updateOrderStatus(Request $request, Order $order): JsonResponse
+  {
+    $request->validate([
+      'orderStatus' => 'required|string|in:pending,processing,completed,declined',
+      'shipmentStatus' => 'required|string|in:pending,shipped,delivered,fail',
+    ]);
+
+    $order->status = $request->orderStatus;
+    $latestShipment = $order->shipment()->latest()->first();
+
+    $order->shipment()->updateOrCreate(
+      [
+        'order_id' => $order->id, // Ensure the update is for the same order
+        'status' => $request->shipmentStatus, // Look for an existing status for this order
+      ],
+      [
+        'tracking_number' => $latestShipment ? $latestShipment->tracking_number : uniqid('TRK-'),
+        'shipped_at' => $request->shipmentStatus === 'shipped' ? now() : ($latestShipment ? $latestShipment->shipped_at : null),
+        'delivered_at' => $request->shipmentStatus === 'delivered' ? now() : null,
+        'updated_at' => now(), // Update the timestamp
+      ]
+    );
+
+
+    if ($request->shipmentStatus === 'delivered') {
+      $order->payment()->update([
+        'status' => 'success',
+      ]);
+    }
+
+    $order->save();
+    return response()->json(
+      [
+        'success' => true,
+        'message' => 'Order status updated successfully', 'data' => $order
+      ]
+    );
   }
 }

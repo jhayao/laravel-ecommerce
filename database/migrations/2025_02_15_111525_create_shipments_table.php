@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained();
             $table->string('tracking_number')->nullable();
-            $table->enum('status', ['pending', 'shipped', 'delivered'])->default('pending');
+            $table->enum('status', ['pending', 'shipped', 'delivered','fail'])->default('pending');
             $table->dateTime('shipped_at')->nullable();
             $table->dateTime('delivered_at')->nullable();
             $table->timestamps();
