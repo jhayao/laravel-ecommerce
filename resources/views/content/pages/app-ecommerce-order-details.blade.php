@@ -92,7 +92,7 @@
             <div class="order-calculations">
               <div class="d-flex justify-content-start gap-4">
                 <span class="w-px-100 text-heading">Subtotal:</span>
-                <h6 class="mb-0">$5000.25</h6>
+                <h6 class="mb-0"></h6>
               </div>
               <div class="d-flex justify-content-start gap-4">
                 <span class="w-px-100 text-heading">Discount:</span>
@@ -104,7 +104,7 @@
               </div>
               <div class="d-flex justify-content-start gap-4">
                 <h6 class="w-px-100 mb-1">Total:</h6>
-                <h6 class="mb-0">$5100.25</h6>
+                <h6 class="mb-0"></h6>
               </div>
             </div>
           </div>

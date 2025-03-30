@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -59,6 +60,8 @@ Route::group(['prefix' => 'customer', 'middleware' => 'auth:sanctum'], function 
   Route::put('update', [CustomerController::class, 'update'])->name('customer.update');
   Route::get('profile', [CustomerAuthController::class, 'profile'])->name('customer.profile');
 
+
+
   Route::group(['prefix' => 'address'], function () {
     Route::post('', [CustomerAddressController::class, 'storeAddress'])->name('customer.address.store');
     Route::get('list', [CustomerAddressController::class, 'getAddressList'])->name('customer.address.list');
@@ -66,6 +69,15 @@ Route::group(['prefix' => 'customer', 'middleware' => 'auth:sanctum'], function 
     Route::put('update/{address}', [CustomerAddressController::class, 'updateAddress'])->name('customer.address.update');
     Route::delete('delete/{address}', [CustomerAddressController::class, 'deleteAddress'])->name('customer.address.delete');
   });
+});
+
+Route::group(['prefix' => 'admin'], function () {
+  Route::get('customer-list', [CustomerController::class, 'customerList'])->name('customer.list');
+  Route::get('customer-details/{customer}', [CustomerController::class, 'show'])->name('customer.details');
+  Route::put('customer-update/{customer}', [CustomerController::class, 'update'])->name('customer.update');
+  Route::delete('customer-delete/{customer}', [CustomerController::class, 'destroy'])->name('customer.delete');
+  Route::get('customer-order-list/{customer}', [CustomerController::class, 'customerOrders'])->name('order.list');
+  Route::get('payment-list', [PaymentController::class, 'getPaymentList'])->name('payment.list');
 });
 
 Route::group(['prefix' => 'checkout', 'middleware' => 'auth:sanctum'], function () {

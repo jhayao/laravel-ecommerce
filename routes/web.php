@@ -21,6 +21,7 @@ use App\Http\Controllers\pages\EcommerceSettingsNotifications;
 use App\Http\Controllers\pages\EcommerceSettingsPayments;
 use App\Http\Controllers\pages\EcommerceSettingsShipping;
 use App\Http\Controllers\pages\Dashboard as DashboardAlias;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -69,7 +70,7 @@ Route::group(['prefix' => 'orders'], function () {
 //Customers
 Route::group(['prefix' => 'customers'], function () {
   Route::get('all', [EcommerceCustomerAll::class, 'index'])->name('pages-customer-all');
-  Route::get('details/overview', [EcommerceCustomerDetailsOverview::class, 'index'])->name('pages-customer-details-overview');
+  Route::get('details/overview/{customer}', [\App\Http\Controllers\CustomerController::class, 'show'])->name('pages-customer-details-overview');
   Route::get('details/security', [EcommerceCustomerDetailsSecurity::class, 'index'])->name('pages-customer-details-security');
   Route::get('details/billing', [EcommerceCustomerDetailsBilling::class, 'index'])->name('pages-customer-details-billing');
   Route::get('details/notifications', [EcommerceCustomerDetailsNotifications::class, 'index'])->name('pages-customer-details-notifications');
@@ -78,6 +79,12 @@ Route::group(['prefix' => 'customers'], function () {
 
 
 
+Route::group(['prefix' => 'invoice'], function () {
+  Route::get('list', [PaymentController::class, 'index'])->name('pages-invoice-list');
+  Route::get('details/{payment}', [PaymentController::class, 'show'])->name('pages-invoice-details');
+  Route::get('add', [PaymentController::class, 'create'])->name('pages-invoice-add');
+  Route::post('add', [PaymentController::class, 'store'])->name('invoice.add');
+});
 
 
 Route::get('/app/ecommerce/manage/reviews', [EcommerceManageReviews::class, 'index'])->name('pages-manage-reviews');

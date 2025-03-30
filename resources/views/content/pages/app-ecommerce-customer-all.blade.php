@@ -40,7 +40,7 @@
           <th></th>
           <th></th>
           <th>Customer</th>
-          <th class="text-nowrap">Customer Id</th>
+          <th class="text-nowrap">Customer Email</th>
           <th>Country</th>
           <th>Order</th>
           <th class="text-nowrap">Total Spent</th>

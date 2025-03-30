@@ -28,7 +28,7 @@ class Customer extends Model
 
   protected $with = ['cart', 'address'];
 
-  protected $appends = ['full_name'];
+  protected $appends = ['full_name', 'orders_count', 'total_spent'];
 
   protected $hidden = [
     'password',
@@ -75,7 +75,24 @@ class Customer extends Model
 
   public function getProfilePictureAttribute($value): string
   {
+    if (!$value) {
+      return asset('assets/img/avatars/15.png');
+    }
     return asset($value);
   }
 
+  public function orders(): HasMany
+  {
+    return $this->hasMany(Order::class, 'customer_id');
+  }
+
+  public function getOrdersCountAttribute(): int
+  {
+    return $this->orders()->count();
+  }
+
+  public function getTotalSpentAttribute(): float
+  {
+    return $this->orders()->sum('total');
+  }
 }

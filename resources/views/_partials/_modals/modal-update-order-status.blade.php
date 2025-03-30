@@ -1,8 +1,8 @@
 @php
-    $order_status = $order->status;
+    $order = $order ?? null;
+    $order_status = $order->status ?? '';
     $order_id = $order->id;
-    $shipment_status = $order->shipment()->latest()->first()->status;
-    dump($shipment_status);
+    $shipment_status = $order->shipment()->latest()->first()->status ?? '';
 @endphp
 <!-- Update Order Status Modal -->
 <div class="modal fade" id="updateOrderStatus2" tabindex="-1" aria-hidden="true">

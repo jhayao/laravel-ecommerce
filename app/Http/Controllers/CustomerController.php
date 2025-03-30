@@ -5,65 +5,78 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+  /**
+   * Display a listing of the resource.
+   */
+  public function index(): View
+  {
+    return view('content.pages.app-ecommerce-customer-all');
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+  public function customerList(): JsonResponse {
+      $customers = Customer::with('orders')->get();
+    return response()->json(["data" => $customers], 200);
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreCustomerRequest $request)
-    {
-        //
-    }
+  /**
+   * Show the form for creating a new resource.
+   */
+  public function create()
+  {
+    //
+  }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Customer $customer)
-    {
-        //
-    }
+  /**
+   * Store a newly created resource in storage.
+   */
+  public function store(StoreCustomerRequest $request)
+  {
+    //
+  }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Customer $customer)
-    {
-        //
-    }
+  /**
+   * Display the specified resource.
+   */
+  public function show(Customer $customer): View
+  {
+    return view('content.pages.app-ecommerce-customer-details-overview',compact('customer'));
+  }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCustomerRequest $request)
-    {
-        $request->validated();
-        $customer = auth()->user();
-        $customer->update($request->all());
-        return response()->json($customer, 200);
-    }
+  /**
+   * Show the form for editing the specified resource.
+   */
+  public function edit(Customer $customer)
+  {
+    //
+  }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Customer $customer)
-    {
-        //
-    }
+  /**
+   * Update the specified resource in storage.
+   */
+  public function update(UpdateCustomerRequest $request)
+  {
+    $request->validated();
+    $customer = auth()->user();
+    $customer->update($request->all());
+    return response()->json($customer, 200);
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   */
+  public function destroy(Customer $customer)
+  {
+    //
+  }
+
+  public function customerOrders(Customer $customer): JsonResponse
+  {
+      $customerOrders = $customer->orders()->get();
+      return response()->json(["data" => $customerOrders], 200);
+  }
 }
