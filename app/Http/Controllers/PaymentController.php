@@ -49,6 +49,20 @@ class PaymentController extends Controller
     ]);
   }
 
+  public function printInvoice(Payment $payment): View
+  {
+    $address = str_replace('<br>', ', ', $payment->order->customer->address()->first()->full_address);
+    $order_items = $payment->order->items;
+    $pageConfigs = ['myLayout' => 'blank'];
+    return view('content.pages.app-invoice-print', [
+      'payment' => $payment,
+      'delivered_at' => $payment->order->shipment()->where('status', 'delivered')->first()->delivered_at,
+      'address' => $address,
+      'order_items' => $order_items,
+      'pageConfigs' => $pageConfigs,
+    ]);
+  }
+
   /**
    * Show the form for editing the specified resource.
    */

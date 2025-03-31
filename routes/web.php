@@ -82,6 +82,7 @@ Route::group(['prefix' => 'customers'], function () {
 Route::group(['prefix' => 'invoice'], function () {
   Route::get('list', [PaymentController::class, 'index'])->name('pages-invoice-list');
   Route::get('details/{payment}', [PaymentController::class, 'show'])->name('pages-invoice-details');
+  Route::get('print/{payment}', [PaymentController::class, 'printInvoice'])->name('pages-invoice-print');
   Route::get('add', [PaymentController::class, 'create'])->name('pages-invoice-add');
   Route::post('add', [PaymentController::class, 'store'])->name('invoice.add');
 });

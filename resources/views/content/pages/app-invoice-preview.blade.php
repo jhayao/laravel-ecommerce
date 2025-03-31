@@ -174,20 +174,20 @@
         <button class="btn btn-primary d-grid w-100 mb-4" data-bs-toggle="offcanvas" data-bs-target="#sendInvoiceOffcanvas">
           <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="ri-send-plane-line ri-16px scaleX-n1-rtl me-2"></i>Send Invoice</span>
         </button>
-        <button class="btn btn-outline-secondary d-grid w-100 mb-4">
-          Download
-        </button>
+{{--        <button class="btn btn-outline-secondary d-grid w-100 mb-4">--}}
+{{--          Download--}}
+{{--        </button>--}}
         <div class="d-flex mb-4">
-          <a class="btn btn-outline-secondary d-grid w-100 me-4" target="_blank" href="{{url('app/invoice/print')}}">
+          <a class="btn btn-outline-primary d-grid w-100 " target="_blank" href="{{url('invoice/print/'.$payment->id)}}">
             Print
           </a>
-          <a href="{{url('app/invoice/edit')}}" class="btn btn-outline-secondary d-grid w-100">
-            Edit
-          </a>
+{{--          <a href="{{url('app/invoice/edit')}}" class="btn btn-outline-secondary d-grid w-100">--}}
+{{--            Edit--}}
+{{--          </a>--}}
         </div>
-        <button class="btn btn-success d-grid w-100" data-bs-toggle="offcanvas" data-bs-target="#addPaymentOffcanvas">
-          <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="ri-money-dollar-circle-line ri-16px me-2"></i>Add Payment</span>
-        </button>
+{{--        <button class="btn btn-success d-grid w-100" data-bs-toggle="offcanvas" data-bs-target="#addPaymentOffcanvas">--}}
+{{--          <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="ri-money-dollar-circle-line ri-16px me-2"></i>Add Payment</span>--}}
+{{--        </button>--}}
       </div>
     </div>
   </div>
