@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
@@ -10,41 +10,39 @@ jobs:
     timeout-minutes: 15
     concurrency: deploy-prod # Avoid deploying concurrently
     steps:
-      -   uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      -   uses: actions/setup-node@v2
-          with:
-            node-version: '18'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18'
 
-      -   name: Cache NPM dependencies
-          uses: actions/cache@v4
-          with:
-            path: ~/.npm # npm cache files are stored in `~/.npm`
-            key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.OS }}-node-
+      - name: Cache NPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm`
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
 
       # You can remove this step if you don't have a `package.json` file
-      -   run: npm ci
+      - run: npm ci
 
-      -   name: Setup PHP
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: '8.2'
-            coverage: none
-            # Install the Bref CLI as a global tool
-            tools: bref/cli
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          # Install the Bref CLI as a global tool
+          tools: bref/cli
 
+      - uses: ramsey/composer-install@v3
+        with:
+          composer-options: '--optimize-autoloader --no-dev'
 
+      - name: Run NPM build
+        run: npm run build
 
-      -   uses: ramsey/composer-install@v3
-          with:
-            composer-options: '--optimize-autoloader --no-dev'
-
-#      -   name: Run NPM build
-#          run: npm run build
-
-      -   run: bref deploy --env=prod
-          env:
-            # Create this secret in your repository settings
-            BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
+      - run: bref deploy --env=prod
+        env:
+          # Create this secret in your repository settings
+          BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
