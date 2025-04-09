@@ -6,6 +6,8 @@
 
 // Comment editor
 
+import { $ } from "../vendor/libs/jquery/jquery.js"
+
 const commentEditor = document.querySelector('.comment-editor');
 
 const quill = new Quill(commentEditor, {
@@ -80,6 +82,7 @@ function initializeDataTable() {
         { data: 'categories' },
         { data: 'total_products' },
         { data: 'total_earnings' },
+        { data: 'status'},
         { data: '' }
       ],
       columnDefs: [
@@ -99,7 +102,7 @@ function initializeDataTable() {
           orderable: false,
           searchable: false,
           responsivePriority: 4,
-          checkboxes: true,
+          // checkboxes: true,
           render: function () {
             return '<input type="checkbox" class="dt-checkboxes form-check-input">';
           },
@@ -174,19 +177,42 @@ function initializeDataTable() {
           }
         },
         {
+          //status
+          targets: 5,
+          orderable: false,
+          render: function (data, type, full, meta) {
+            var status = full['status'];
+            var statusBadge = '';
+            if (status === 'publish') {
+              statusBadge = '<span class="badge rounded-pill bg-light-success text-success">Active</span>';
+            } else if (status === 'inactive') {
+              statusBadge = '<span class="badge rounded-pill bg-light-warning text-warning">Inactive</span>';
+            }
+            else if (status === 'deleted') {
+              statusBadge = '<span class="badge rounded-pill bg-light-danger text-danger">Deleted</span>';
+            }
+            return statusBadge;
+          }
+        },
+        {
           // Actions
           targets: -1,
           title: 'Actions',
           searchable: false,
           orderable: false,
           render: function (data, type, full, meta) {
+            let status = full['status'];
+            let message = status === 'publish' ? 'Delete' : 'Republish';
+            if (status === 'deleted') {
+
+            }
             return (
               '<div class="d-flex align-items-sm-center justify-content-sm-center">' +
-              '<button class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill"><i class="ri-edit-box-line ri-20px"></i></button>' +
+              '<button class="btn btn-sm btn-icon bt-edit btn-text-secondary waves-effect waves-light rounded-pill"><i class="ri-edit-box-line ri-20px"></i></button>' +
               '<button class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ri-more-2-line ri-20px"></i></button>' +
               '<div class="dropdown-menu dropdown-menu-end m-0">' +
               '<a href="javascript:0;" class="dropdown-item">View</a>' +
-              '<a href="#" class="dropdown-item dt-delete">Suspend</a>' +
+              '<a href="#" class="dropdown-item dt-delete" data-status="status">' + message + '</a>' +
               '</div>' +
               '</div>'
             );
@@ -484,6 +510,7 @@ initializeDataTable();
           // Optionally reset form
           fv.resetForm(true);
         } else {
+          console.log(data);
           toastr.error(options, data.message);
         }
       })
@@ -504,19 +531,34 @@ $(document).ready(function () {
     var $row = $(this).closest('tr');
     var data = $('.datatables-category-list').DataTable().row($row).data();
     var id = data.id;
+    var status = data.status;
     var url = '/api/categories/delete/' + id;
     var $table = $('.datatables-category-list').DataTable();
     var $row = $(this).closest('tr');
     var data = $table.row($row).data();
+    var message = '';
+    var confirmButtonText = '';
+    var type = 'DELETE'
+    var responseMsg = 'Deleted!';
+    if (status === 'publish') {
+        message = 'All Products under this category will be deleted!'
+        confirmButtonText = 'Yes, delete it!'
+    } else {
+      message = 'All Products under this category will be restored!'
+      confirmButtonText = 'Yes, republish it!'
+      url = '/api/categories/restore/' + id;
+      type = 'POST';
+      responseMsg = 'Restored!';
+    }
 
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
+      text: message,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#D94148',
       cancelButtonColor: '#536DE6',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: confirmButtonText,
       customClass: {
         confirmButton: 'btn btn-primary me-1 waves-effect waves-light',
         cancelButton: 'btn btn-outline-secondary waves-effect'
@@ -526,26 +568,28 @@ $(document).ready(function () {
       if (result.isConfirmed) {
         $.ajax({
           url: url,
-          type: 'DELETE',
+          type: type,
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
           success: function (response) {
             if (response.success) {
-              $table.row($row).remove().draw();
               Swal.fire({
-                title: 'Deleted!',
-                text: 'The product has been deleted.',
+                title: responseMsg,
+                text: 'The product has been ' + responseMsg.toLocaleLowerCase(),
                 icon: 'success',
                 showCancelButton: false,
-                confirmButtonText: 'Yes, delete it!',
+                confirmButtonText: 'Okay',
               });
             } else {
               Swal.fire({
                 title: 'Error!',
-                text: 'The product has not been deleted.',
+                text: 'The product has not been ' + responseMsg.toLocaleLowerCase(),
                 icon: 'error',
                 showCancelButton: false,
                 confirmButtonColor: '#D94148',
                 cancelButtonColor: '#536DE6',
-                confirmButtonText: 'Yes, delete it!',
+                confirmButtonText: 'Okay',
                 customClass: {
                   confirmButton: 'btn btn-primary me-1 waves-effect waves-light',
                   cancelButton: 'btn btn-outline-secondary waves-effect'
@@ -554,8 +598,47 @@ $(document).ready(function () {
               });
             }
           }
+        }).always(function () {
+          $table.ajax.reload(null,false);
         });
       }
     });
+  });
+});
+
+$(document).ready(function () {
+  $('.datatables-category-list').on('click', '.bt-edit', function (e) {
+    var $row = $(this).closest('tr');
+    var data = $('.datatables-category-list').DataTable().row($row).data();
+    var id = data.id;
+    // var url = '/products/edit/' + id;
+    console.log(id);
+    $.ajax({
+      url: '/api/categories/category-details/' + id,
+      type: 'GET',
+      success: function (response) {
+        if (response) {
+          $('#ecommerce-category-title').val(response.title);
+          $('#ecommerce-category-slug').val(response.slug);
+          // $('#ecommerce-category-description-input').val(category.description);
+          quill.root.innerHTML = response.description;
+          $('#ecommerce-category-parent-category').val(response.parent_id ?? '0').trigger('change');
+          $('#ecommerce-category-status').val(response.status).trigger('change');
+          var offcanvas = new bootstrap.Offcanvas($('#offcanvasEcommerceCategoryList')[0]);
+          offcanvas.show();
+          $('#eCommerceCategoryListForm').attr('action', '/category/update/' + id);
+          $('#frmSubmit').text('Update');
+        }
+      }
+    })
+  });
+
+  $('#offcanvasEcommerceCategoryList').on('hidden.bs.offcanvas', function () {
+    $('#eCommerceCategoryListForm')[0].reset(); // Reset the form
+    $('#ecommerce-category-parent-category').val(null).trigger('change'); // Reset Select2
+    $('#ecommerce-category-status').val(null).trigger('change');
+    quill.root.innerHTML = ''; // Reset Quill
+    $('#frmSubmit').text('Add');
+    $('#eCommerceCategoryListForm').attr('action', '/category');
   });
 });

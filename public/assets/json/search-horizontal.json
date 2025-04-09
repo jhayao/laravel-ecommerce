@@ -133,7 +133,7 @@
     {
       "name": "eCommerce - Settings Store Payments",
       "icon": "ri-cash-fill",
-      "url": "app/ecommerce/settings/payments"
+      "url": "app/ecommerce/settings/carousel"
     },
     {
       "name": "eCommerce - Settings Store Checkout",

@@ -1,17 +1,6 @@
 {
   "menu": [
-    {
-      "url": "/",
-      "name": "Home",
-      "icon": "menu-icon tf-icons ri-home-smile-line",
-      "slug": "pages-home"
-    },
-    {
-      "url": "/page-2",
-      "icon": "menu-icon tf-icons ri-file-3-line",
-      "name": "Page 2",
-      "slug": "pages-page-2"
-    },
+
     {
       "url": "/dashboard",
       "icon": "menu-icon tf-icons ri-dashboard-line",
@@ -70,44 +59,43 @@
         {
           "name": "Customer Details",
           "slug": "pages-customer-details",
-          "submenu": [
-            {
-              "url": "customers/details/overview",
-              "name": "Overview",
-              "slug": "pages-customer-details-overview"
-            },
-            {
-              "url": "customers/details/security",
-              "name": "Security",
-              "slug": "pages-customer-details-security"
-            },
-            {
-              "url": "customers/details/billing",
-              "name": "Address & Billing",
-              "slug": "pages-customer-details-billing"
-            },
-            {
-              "url": "customers/details/notifications",
-              "name": "Notifications",
-              "slug": "pages-customer-details-notifications"
-            }
-          ]
+          "url": "customers/details/overview"
         }
       ]
     },
     {
-      "url": "/auth/login-basic",
-      "name": "Login",
-      "icon": "menu-icon tf-icons ri-logout-box-r-line",
-      "slug": "auth-login-basic",
-      "target": "_blank"
+      "name": "Invoice",
+      "slug": "pages-payment",
+      "icon": "menu-icon tf-icons ri-file-text-line",
+      "submenu": [
+        {
+          "url": "invoice/list",
+          "name": "Invoice List",
+          "slug": "pages-invoice-list"
+        },
+        {
+          "url": "invoice/details",
+          "name": "Invoice Details",
+          "slug": "pages-invoice-details"
+        }
+      ]
     },
     {
-      "url": "/auth/register-basic",
-      "name": "Register",
-      "icon": "menu-icon tf-icons ri-account-circle-line",
-      "slug": "auth-register-basic",
-      "target": "_blank"
+      "name": "Settings",
+      "icon": "menu-icon tf-icons ri-settings-2-line",
+      "slug": "pages-settings",
+      "submenu": [
+        {
+          "url": "settings/general",
+          "name": "General Settings",
+          "slug": "pages-settings-general"
+        },
+        {
+          "url": "settings/notifications",
+          "name": "Notification Settings",
+          "slug": "pages-settings-notifications"
+        }
+      ]
     }
   ]
 }

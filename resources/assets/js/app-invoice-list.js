@@ -11,18 +11,17 @@ $(function () {
   // Invoice datatable
   if (dt_invoice_table.length) {
     var dt_invoice = dt_invoice_table.DataTable({
-      ajax: assetsPath + 'json/invoice-list.json', // JSON file to add data
+      ajax: '/api/admin/payment-list', // API endpoint to fetch data
       columns: [
-        // columns according to JSON
-        { data: 'invoice_id' },
-        { data: 'invoice_id' },
-        { data: 'invoice_id' },
-        { data: 'invoice_status' },
-        { data: 'issued_date' },
-        { data: 'client_name' },
-        { data: 'total' },
-        { data: 'balance' },
-        { data: 'invoice_status' },
+        // columns according to API response
+        { data: 'id' },
+        { data: 'order.order_number' },
+        { data: 'order.customer.full_name' },
+        { data: 'method' },
+        { data: 'status' },
+        { data: 'amount' },
+        { data: 'created_at' },
+        { data: 'updated_at' },
         { data: 'action' }
       ],
       columnDefs: [
@@ -36,7 +35,6 @@ $(function () {
             return '';
           }
         },
-
         {
           // For Checkboxes
           targets: 1,
@@ -50,71 +48,23 @@ $(function () {
           searchable: false
         },
         {
-          // Invoice ID
+          // Order Number
           targets: 2,
           render: function (data, type, full, meta) {
-            var $invoice_id = full['invoice_id'];
+            var $order_number = full['order']['order_number'];
             // Creates full output for row
-            var $row_output = '<a href="' + baseUrl + 'app/invoice/preview"><span>#' + $invoice_id + '</span></a>';
+            var $row_output = '<a href="' + baseUrl + 'invoice/details/16"><span>#' + $order_number + '</span></a>';
             return $row_output;
           }
         },
         {
-          // Invoice status
+          // Customer Name
           targets: 3,
           render: function (data, type, full, meta) {
-            var $invoice_status = full['invoice_status'],
-              $due_date = full['due_date'],
-              $balance = full['balance'];
-            var roleBadgeObj = {
-              Sent: '<span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-secondary"><i class="ri-save-line ri-16px"></i></span></span>',
-              Draft:
-                '<span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-primary"><i class="ri-mail-line ri-16px"></i></span></span>',
-              'Past Due':
-                '<span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-danger"><i class="ri-error-warning-line ri-16px"></i></span></span>',
-              'Partial Payment':
-                '<span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-success"><i class="ri-check-line ri-16px"></i></span></span>',
-              Paid: '<span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-warning"><i class="ri-line-chart-line ri-16px"></i></span></span>',
-              Downloaded:
-                '<span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-info"><i class="ri-arrow-down-line ri-16px"></i></span></span>'
-            };
-            return (
-              "<div class='d-inline-flex' data-bs-toggle='tooltip' data-bs-html='true' title='<span>" +
-              $invoice_status +
-              '<br> <span class="fw-medium">Balance:</span> ' +
-              $balance +
-              '<br> <span class="fw-medium">Due Date:</span> ' +
-              $due_date +
-              "</span>'>" +
-              roleBadgeObj[$invoice_status] +
-              '</div>'
-            );
-          }
-        },
-        {
-          // Client name and Service
-          targets: 4,
-          responsivePriority: 4,
-          render: function (data, type, full, meta) {
-            var $name = full['client_name'],
-              $service = full['service'],
-              $image = full['avatar_image'],
-              $rand_num = Math.floor(Math.random() * 11) + 1,
-              $user_img = $rand_num + '.png';
-            if ($image === true) {
-              // For Avatar image
-              var $output =
-                '<img src="' + assetsPath + 'img/avatars/' + $user_img + '" alt="Avatar" class="rounded-circle">';
-            } else {
-              // For Avatar badge
-              var stateNum = Math.floor(Math.random() * 6),
-                states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'],
-                $state = states[stateNum],
-                $name = full['client_name'],
-                $initials = $name.match(/\b\w/g) || [];
-              $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-              $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
-            }
+            var $name = full['order']['customer']['full_name'],
+              $id = full.order.customer.id,
+              $image = full['order']['customer']['profile_picture'];
+            var $output = '<img src="' + $image + '" alt="Avatar" class="rounded-circle">';
             // Creates full output for row
             var $row_output =
               '<div class="d-flex justify-content-start align-items-center">' +
@@ -126,58 +76,70 @@ $(function () {
               '<div class="d-flex flex-column">' +
               '<a href="' +
               baseUrl +
-              'pages/profile-user" class="text-truncate text-heading"><p class="mb-0 fw-medium">' +
+              'customers/details/overview/' + $id + '" class="text-truncate text-heading"><p class="mb-0 fw-medium">' +
               $name +
               '</p></a>' +
-              '<small class="text-truncate">' +
-              $service +
-              '</small>' +
               '</div>' +
               '</div>';
+            console.log($row_output);
             return $row_output;
           }
         },
         {
-          // Total Invoice Amount
-          targets: 5,
-          render: function (data, type, full, meta) {
-            var $total = full['total'];
-            return '<span>$' + $total + '</span>';
-          }
-        },
-        {
-          // Due Date
+          // Payment Method
           targets: 6,
           render: function (data, type, full, meta) {
-            var $due_date = new Date(full['due_date']);
-            // Creates full output for row
-            var $row_output =
-              '<span class="d-none">' +
-              moment($due_date).format('YYYYMMDD') +
-              '</span>' +
-              moment($due_date).format('DD MMM YYYY');
-            $due_date;
-            return $row_output;
-          }
-        },
-        {
-          // Client Balance/Status
-          targets: 7,
-          orderable: false,
-          render: function (data, type, full, meta) {
-            var $balance = full['balance'];
-            if ($balance === 0) {
-              var $badge_class = 'bg-label-success';
-              return '<span class="badge rounded-pill ' + $badge_class + '" text-capitalized> Paid </span>';
-            } else {
-              return '<span class="text-heading">' + $balance + '</span>';
+            var $method = 'cod';
+            var $method_number = 'Cash on Delivery';
+
+            if ($method == 'paypal') {
+              $method_number = '@gmail.com';
             }
+            return (
+              '<div class="d-flex align-items-center text-nowrap">' +
+              '<img src="' +
+              assetsPath +
+              'img/icons/payments/' +
+              $method +
+              '.png" alt="' +
+              $method +
+              '" class="me-2" width="29">' +
+              '<span><i class=""></i>' +
+              $method_number +
+              '</span>' +
+              '</div>'
+            );
           }
         },
         {
-          targets: 8,
-          visible: false
+          // Payment Status
+          targets: 7,
+          render: function (data, type, full, meta) {
+            var $status = full['status'];
+            var statusBadgeObj = {
+              pending: '<span class="badge bg-label-warning">Pending</span>',
+              success: '<span class="badge bg-label-success">Success</span>',
+              failed: '<span class="badge bg-label-danger">Failed</span>'
+            };
+            return statusBadgeObj[$status];
+          }
         },
+        {
+          // Amount
+          targets: 4,
+          render: function (data, type, full, meta) {
+            return '<span>₱ ' + full['amount'] + '</span>';
+          }
+        },
+        {
+          // Created At
+          targets: 5,
+          render: function (data, type, full, meta) {
+            var $created_at = new Date(full['updated_at']);
+            return moment($created_at).format('DD MMM YYYY');
+          }
+        },
+
         {
           // Actions
           targets: -1,
@@ -187,10 +149,10 @@ $(function () {
           render: function (data, type, full, meta) {
             return (
               '<div class="d-flex align-items-center">' +
-              '<a href="javascript:;" data-bs-toggle="tooltip" class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill delete-record" data-bs-placement="top" title="Delete Invoice"><i class="ri-delete-bin-7-line ri-20px"></i></a>' +
+              '<a href="javascript:;" data-bs-toggle="tooltip" class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill delete-record" data-bs-placement="top" title="Delete Payment"><i class="ri-delete-bin-7-line ri-20px"></i></a>' +
               '<a href="' +
               baseUrl +
-              'app/invoice/preview" data-bs-toggle="tooltip" class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill"  data-bs-placement="top" title="Preview Invoice"><i class="ri-eye-line ri-20px"></i></a>' +
+              'app/invoice/preview" data-bs-toggle="tooltip" class="btn btn-sm btn-icon btn-text-secondary waves-effect waves-light rounded-pill"  data-bs-placement="top" title="Preview Payment"><i class="ri-eye-line ri-20px"></i></a>' +
               '<div class="dropdown">' +
               '<a href="javascript:;" class="btn btn-icon btn-sm btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown"><i class="ri-more-2-line ri-20px"></i></a>' +
               '<div class="dropdown-menu dropdown-menu-end">' +
@@ -219,7 +181,7 @@ $(function () {
       language: {
         sLengthMenu: 'Show _MENU_',
         search: '',
-        searchPlaceholder: 'Search Invoice',
+        searchPlaceholder: 'Search Payment',
         paginate: {
           next: '<i class="ri-arrow-right-s-line"></i>',
           previous: '<i class="ri-arrow-left-s-line"></i>'
@@ -228,7 +190,7 @@ $(function () {
       // Buttons with Dropdown
       buttons: [
         {
-          text: '<i class="ri-add-line ri-16px me-md-2 align-baseline"></i><span class="d-md-inline-block d-none">Create Invoice</span>',
+          text: '<i class="ri-add-line ri-16px me-md-2 align-baseline"></i><span class="d-md-inline-block d-none">Create Payment</span>',
           className: 'btn btn-primary waves-effect waves-light',
           action: function (e, dt, button, config) {
             window.location = baseUrl + 'app/invoice/add';
@@ -241,7 +203,7 @@ $(function () {
           display: $.fn.dataTable.Responsive.display.modal({
             header: function (row) {
               var data = row.data();
-              return 'Details of ' + data['full_name'];
+              return 'Details of ' + data['order']['customer']['full_name'];
             }
           }),
           type: 'column',
@@ -270,27 +232,28 @@ $(function () {
       },
       initComplete: function () {
         // Adding role filter once table initialized
-        this.api()
-          .columns(8)
-          .every(function () {
-            var column = this;
-            var select = $(
-              '<select id="UserRole" class="form-select"><option value=""> Select Status </option></select>'
-            )
-              .appendTo('.invoice_status')
-              .on('change', function () {
-                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                column.search(val ? '^' + val + '$' : '', true, false).draw();
-              });
-
-            column
-              .data()
-              .unique()
-              .sort()
-              .each(function (d, j) {
-                select.append('<option value="' + d + '" class="text-capitalize">' + d + '</option>');
-              });
-          });
+        // this.api()
+        //   .columns(4)
+        //   .every(function () {
+        //     var column = this;
+        //     var select = $(
+        //       '<select id="PaymentStatus" class="form-select"><option value=""> Select Status </option></select>'
+        //     )
+        //       .appendTo('.invoice_status')
+        //       .on('change', function () {
+        //         var val = $.fn.dataTable.util.escapeRegex($(this).val());
+        //         console.log(val);
+        //         column.search(val ? '^' + val + '$' : '', true, false).draw();
+        //       });
+        //
+        //     column
+        //       .data()
+        //       .unique()
+        //       .sort()
+        //       .each(function (d, j) {
+        //         select.append('<option value="' + d + '" class="text-capitalize">' + d + '</option>');
+        //       });
+        //   });
       }
     });
   }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCategoryRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,17 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+      if ($this->has('parent_id') && $this->parent_id == 0) {
+        $this->merge(['parent_id' => null]);
+      }
+
+      return [
+        'title' => ['required', 'string', 'max:255'],
+        'description' => ['required', 'string', 'max:255'],
+        'slug' => ['required', 'string', 'max:255', Rule::unique('categories')->ignore($this->route('category'))],
+        'category_image' => ['sometimes', 'file', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+        'parent_id' => ['nullable', 'integer', 'exists:categories,id'],
+        'status' => ['required', 'string', 'in:scheduled,publish,inactive'],
+      ];
     }
 }

@@ -34,15 +34,15 @@ $(function () {
   // customers datatable
   if (dt_customer_table.length) {
     var dt_customer = dt_customer_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-customer-all.json', // JSON file to add data
+      ajax: '/api/admin/customer-list', // JSON file to add data
       columns: [
         // columns according to JSON
         { data: '' },
         { data: 'id' },
-        { data: 'customer' },
-        { data: 'customer_id' },
-        { data: 'country' },
-        { data: 'order' },
+        { data: 'full_name' },
+        { data: 'email' },
+        { data: 'address.country' },
+        { data: 'order_count' },
         { data: 'total_spent' }
       ],
       columnDefs: [
@@ -76,20 +76,20 @@ $(function () {
           targets: 2,
           responsivePriority: 1,
           render: function (data, type, full, meta) {
-            var $name = full['customer'],
+            var $name = full['full_name'],
               $email = full['email'],
-              $image = full['image'];
+              $image = full['profile_picture'];
 
             if ($image) {
               // For Avatar image
               var $output =
-                '<img src="' + assetsPath + 'img/avatars/' + $image + '" alt="Avatar" class="rounded-circle">';
+                '<img src="' + $image + '" alt="Avatar" class="rounded-circle">';
             } else {
               // For Avatar badge
               var stateNum = Math.floor(Math.random() * 6);
               var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
               var $state = states[stateNum],
-                $name = full['customer'],
+                $name = full['full_name'],
                 $initials = $name.match(/\b\w/g) || [];
               $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
               $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
@@ -104,7 +104,7 @@ $(function () {
               '</div>' +
               '<div class="d-flex flex-column">' +
               '<a href="' +
-              customerView +
+              customerView + '/' + full.id +
               '"class="text-heading"><span class="fw-medium text-truncate">' +
               $name +
               '</span></a>' +
@@ -120,17 +120,17 @@ $(function () {
           // customer Role
           targets: 3,
           render: function (data, type, full, meta) {
-            var $id = full['customer_id'];
+            var $id = full['email'];
 
-            return '<span class="text-heading">#' + $id + '</span>';
+            return '<span class="text-heading">' + $id + '</span>';
           }
         },
         {
           // Plans
           targets: 4,
           render: function (data, type, full, meta) {
-            var $plan = full['country'];
-            var $code = full['country_code'];
+            var $plan = 'Philippines';
+            var $code = 'ph';
 
             if ($code) {
               var $output_code = `<i class ="fis fi fi-${$code} rounded-circle me-2 fs-4"></i>`;
@@ -157,7 +157,7 @@ $(function () {
           // customer Status
           targets: 5,
           render: function (data, type, full, meta) {
-            var $status = full['order'];
+            var $status = full['orders_count'];
 
             return '<span>' + $status + '</span>';
           }

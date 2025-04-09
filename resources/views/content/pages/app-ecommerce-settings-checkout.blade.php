@@ -15,15 +15,15 @@
       <h5 class="mb-4">Getting Started</h5>
       <ul class="nav nav-align-left nav-pills flex-column">
         <li class="nav-item mb-1">
-          <a class="nav-link" href="{{url('/app/ecommerce/settings/details')}}">
+          <a class="nav-link" href="{{url('/settings/details')}}">
             <i class="ri-store-2-line me-2"></i>
             <span class="align-middle">Store details</span>
           </a>
         </li>
         <li class="nav-item mb-1">
-          <a class="nav-link" href="{{url('/app/ecommerce/settings/payments')}}">
-            <i class="ri-bank-card-line me-2"></i>
-            <span class="align-middle">Payments</span>
+          <a class="nav-link" href="{{url('/settings/carousel')}}">
+            <i class="ri-carousel-view me-2"></i>
+            <span class="align-middle">Carousel</span>
           </a>
         </li>
         <li class="nav-item mb-1">
@@ -33,19 +33,19 @@
           </a>
         </li>
         <li class="nav-item mb-1">
-          <a class="nav-link" href="{{url('/app/ecommerce/settings/shipping')}}">
+          <a class="nav-link" href="{{url('/settings/shipping')}}">
             <i class="ri-car-line me-2"></i>
             <span class="align-middle">Shipping & delivery</span>
           </a>
         </li>
         <li class="nav-item mb-1">
-          <a class="nav-link" href="{{url('/app/ecommerce/settings/locations')}}">
+          <a class="nav-link" href="{{url('/settings/locations')}}">
             <i class="ri-map-pin-2-line me-2"></i>
             <span class="align-middle">Locations</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{url('/app/ecommerce/settings/notifications')}}">
+          <a class="nav-link" href="{{url('/settings/notifications')}}">
             <i class="ri-notification-4-line me-2"></i>
             <span class="align-middle">Notifications</span>
           </a>

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
+            $table->string('invoice_id')->unique();
             $table->enum('method', ['paypal', 'stripe', 'cod']);
             $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
             $table->decimal('amount', 10, 2);

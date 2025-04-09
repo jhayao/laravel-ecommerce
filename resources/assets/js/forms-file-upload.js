@@ -50,4 +50,35 @@
       addRemoveLinks: true
     });
   }
+
+  // Ensure Dropzone is reinitialized for dynamically added elements
+  if (typeof Dropzone !== 'undefined') {
+    Dropzone.autoDiscover = false;
+
+    const initializeDropzone = selector => {
+      new Dropzone(selector, {
+        url: '/upload', // Replace with your upload URL
+        maxFilesize: 2, // Maximum file size in MB
+        addRemoveLinks: true,
+        dictDefaultMessage: 'Drop files here or click to upload'
+      });
+    };
+
+    // Initialize Dropzone for existing elements
+    initializeDropzone('#dropzone-basic');
+
+    // Reinitialize Dropzone for dynamically added elements
+    document.querySelector('.form-repeater').addEventListener('click', event => {
+      if (event.target && event.target.hasAttribute('data-repeater-create')) {
+        setTimeout(() => {
+          const newDropzone = document.querySelector('.dropzone.needsclick:not(.dz-started)');
+          if (newDropzone) {
+            initializeDropzone(newDropzone);
+          }
+        }, 100); // Delay to ensure the new element is added to the DOM
+      }
+    });
+  } else {
+    console.error('Dropzone library is not loaded.');
+  }
 })();
