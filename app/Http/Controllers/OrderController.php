@@ -45,6 +45,7 @@ class OrderController extends Controller
       $payment = Payment::create([
         'amount' => $cart->total,
         'status' => 'pending',
+        'invoice_id' => uniqid('INV-'),
         'method' => $request->paymentMethod,
       ]);
 

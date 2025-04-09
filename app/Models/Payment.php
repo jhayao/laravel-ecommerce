@@ -16,6 +16,8 @@ class Payment extends Model
         'amount',
         'status',
         'payment_method',
+        'invoice_id',
+        'method',
     ];
 
     protected $appends = ['payment_status_id'];

@@ -169,15 +169,16 @@ class ProductController extends Controller
     $product_data = Product::withTrashed()->join('categories', 'products.category_id', '=', 'categories.id')
       ->select('products.*',
         'categories.title as category_title',
-        DB::raw('"sale" as label'),
+        DB::raw('\'sale\' as label'),
         DB::raw('MIN(images.image) AS image'),
         DB::raw('CASE WHEN products.status = \'publish\' THEN 2 WHEN products.status = \'deleted\' THEN 1 ELSE 3 END AS status_id'))
       ->leftJoin('product_images', 'products.id', '=', 'product_images.product_id')
       ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
-      ->groupBy('products.id')
+      ->groupBy('products.id','categories.title')
       ->get();
     if ($admin) {
       $product_data = $product_data->map(function ($product) {
+        $product->image = $product->image ? Storage::url($product->image) : null;
         $product->description = strip_tags($product->description);
         $product->description = strlen($product->description) > 50 ? substr($product->description, 0, 50) . '...' : $product->description;
         return $product;

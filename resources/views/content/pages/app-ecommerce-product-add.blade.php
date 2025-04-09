@@ -231,9 +231,9 @@
                   <select class="select2 form-select" id="productStatus" name="productStatus"
                           data-placeholder="Select Status">
                     <option value="">Select Status</option>
-                    <option value="publish" @selected($product->status === 'publish')>Published</option>
+                    <option value="publish" @selected($product && $product->status === 'publish')>Published</option>
 {{--                    <option value="scheduled" @selected($product->status === 'scheduled')>Scheduled</option>--}}
-                    <option value="inactive" @selected($product->status === 'inactive')>Inactive</option>
+                    <option value="inactive" @selected($product && $product->status === 'inactive')>Inactive</option>
                   </select>
                   <label for="status-org">Status</label>
                 </div>
@@ -249,6 +249,6 @@
 @endsection
 
 <script>
-  var existingImages = @json($existingImages);
-  var description = @json($description);
+  var existingImages = @json($existingImages ?? '');
+  var description = @json($description ?? '');
 </script>

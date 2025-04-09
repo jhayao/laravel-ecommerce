@@ -62,7 +62,14 @@ class CustomerController extends Controller
   {
     $request->validated();
     $customer = auth()->user();
-    $customer->update($request->all());
+    if ($request->hasFile('profile_picture')) {
+      $file = $request->file('profile_picture');
+      $filename = time() . '.' . $file->getClientOriginalExtension();
+      $file->move(public_path('images'), $filename);
+      $customer->profile_picture = 'images/'. $filename;
+      $customer->save();
+    }
+    $customer->update($request->except(['profile_picture']));
     return response()->json($customer, 200);
   }
 

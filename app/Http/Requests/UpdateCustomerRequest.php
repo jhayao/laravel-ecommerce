@@ -27,7 +27,7 @@ class UpdateCustomerRequest extends FormRequest
       'last_name' => ['required', 'string', 'max:255'],
       'email' => ['required', 'email', 'max:255'],
       'phone_number' => ['required', 'string', 'max:255'],
-      'profile_picture' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048', 'nullable'],
+      'profile_picture' => ['file', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048', 'nullable'],
     ];
   }
 }

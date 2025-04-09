@@ -62,6 +62,6 @@ class CustomerAuthController extends Controller
   public function profile(Request $request): JsonResponse
   {
     $customer = $request->user();
-    return response()->json($customer->load(['address']));
+    return response()->json($customer->load(['address','orders']));
   }
 }

@@ -66,6 +66,9 @@ Route::group(['prefix' => 'category'], function () {
 Route::group(['prefix' => 'orders'], function () {
   Route::get('list', [EcommerceOrderList::class, 'index'])->name('pages-order-list');
   Route::get('details/{order}', [EcommerceOrderDetails::class, 'index'])->name('pages-order-details');
+  Route::get('details', function () {
+    return redirect()->route('pages-order-list');
+  });
 });
 //Customers
 Route::group(['prefix' => 'customers'], function () {
@@ -88,11 +91,14 @@ Route::group(['prefix' => 'invoice'], function () {
 });
 
 
-Route::get('/app/ecommerce/manage/reviews', [EcommerceManageReviews::class, 'index'])->name('pages-manage-reviews');
-Route::get('/app/ecommerce/referrals', [EcommerceReferrals::class, 'index'])->name('pages-referrals');
-Route::get('/app/ecommerce/settings/details', [EcommerceSettingsDetails::class, 'index'])->name('pages-settings-details');
-Route::get('/app/ecommerce/settings/payments', [EcommerceSettingsPayments::class, 'index'])->name('pages-settings-payments');
-Route::get('/app/ecommerce/settings/checkout', [EcommerceSettingsCheckout::class, 'index'])->name('pages-settings-checkout');
-Route::get('/app/ecommerce/settings/shipping', [EcommerceSettingsShipping::class, 'index'])->name('pages-settings-shipping');
-Route::get('/app/ecommerce/settings/locations', [EcommerceSettingsLocations::class, 'index'])->name('pages-settings-locations');
-Route::get('/app/ecommerce/settings/notifications', [EcommerceSettingsNotifications::class, 'index'])->name('pages-settings-notifications');
+Route::group(['prefix' => 'settings'], function() {
+  Route::get('', [EcommerceSettingsDetails::class, 'index'])->name('pages-settings');
+  Route::get('details', [EcommerceSettingsDetails::class, 'index'])->name('pages-settings-details');
+  Route::get('carousel', [EcommerceSettingsDetails::class, 'showCarouselSettings'])->name('pages-settings-carousel');
+  Route::get('payments', [EcommerceSettingsPayments::class, 'index'])->name('pages-settings-payments');
+  Route::get('checkout', [EcommerceSettingsCheckout::class, 'index'])->name('pages-settings-checkout');
+  Route::get('shipping', [EcommerceSettingsShipping::class, 'index'])->name('pages-settings-shipping');
+  Route::get('locations', [EcommerceSettingsLocations::class, 'index'])->name('pages-settings-locations');
+  Route::get('notifications', [EcommerceSettingsNotifications::class, 'index'])->name('pages-settings-notifications');
+  Route::post('save/store-details', [EcommerceSettingsDetails::class, 'saveStoreDetails'])->name('pages-settings-save-store-details');
+});

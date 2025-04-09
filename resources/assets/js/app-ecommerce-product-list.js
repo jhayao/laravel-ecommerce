@@ -108,7 +108,7 @@ $(function () {
 
               var output =
                 '<img src="' +
-                storagePath +
+                // storagePath +
                 image +
                 '" alt="Product-' +
                 id +
