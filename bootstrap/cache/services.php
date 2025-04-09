@@ -36,7 +36,6 @@
     32 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
     33 => 'App\\Providers\\AppServiceProvider',
     34 => 'App\\Providers\\MenuServiceProvider',
-    35 => 'App\\Providers\\TelescopeServiceProvider',
   ),
   'eager' => 
   array (
@@ -60,7 +59,6 @@
     17 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
     18 => 'App\\Providers\\AppServiceProvider',
     19 => 'App\\Providers\\MenuServiceProvider',
-    20 => 'App\\Providers\\TelescopeServiceProvider',
   ),
   'deferred' => 
   array (
