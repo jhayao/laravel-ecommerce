@@ -35,9 +35,15 @@ jobs:
             # Install the Bref CLI as a global tool
             tools: bref/cli
 
+      -   name: Install telescope
+          run: php artisan telescope:install
+
       -   uses: ramsey/composer-install@v3
           with:
             composer-options: '--optimize-autoloader --no-dev'
+
+      -   name: Run NPM build
+          run: npm run build
 
       -   run: bref deploy --env=prod
           env:
