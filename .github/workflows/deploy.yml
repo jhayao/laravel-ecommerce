@@ -41,8 +41,8 @@ jobs:
           with:
             composer-options: '--optimize-autoloader --no-dev'
 
-      -   name: Run NPM build
-          run: npm run build
+#      -   name: Run NPM build
+#          run: npm run build
 
       -   run: bref deploy --env=prod
           env:
