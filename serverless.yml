@@ -56,3 +56,8 @@ functions:
 plugins:
     # We need to include the Bref plugin
     - ./vendor/bref/bref
+
+constructs:
+  website:
+    domain: jhayao.dev
+    certificate: arn:aws:acm:us-east-1:515530072179:certificate/28d78c23-ce2d-4921-a8d2-8970839df199
