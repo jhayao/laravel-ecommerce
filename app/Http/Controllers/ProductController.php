@@ -176,6 +176,7 @@ class ProductController extends Controller
       ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
       ->groupBy('products.id','categories.title')
       ->get();
+
     if ($admin) {
       $product_data = $product_data->map(function ($product) {
         $product->image = $product->image ? Storage::url($product->image) : null;
@@ -186,6 +187,10 @@ class ProductController extends Controller
       $data = ['data' => $product_data->load('images')];
       return response()->json($data);
     }
+    $product_data = $product_data->map(function ($product) {
+      $product->image = $product->image ? 'https://pub-e64b48d6794a40709a9461dc60f7f881.r2.dev/public/'. $product->image : null;
+      return $product;
+    });
     return response()->json($product_data->load('images'));
   }
 
