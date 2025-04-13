@@ -22,7 +22,7 @@ class Image extends Model
 
   public function getImageAttribute($value): string
   {
-    return 'https://pub-e64b48d6794a40709a9461dc60f7f881.r2.dev/public/' .$value;
+    return Storage::disk('s3')->url($value);
   }
 
   public function getRawImageAttribute(): string

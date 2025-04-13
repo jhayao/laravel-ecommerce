@@ -183,11 +183,12 @@ document.addEventListener('DOMContentLoaded', function () {
       let dropzone = this;
       if (typeof existingImages !== "undefined" && existingImages.length > 0) {
         existingImages.forEach(function (file) {
-          console.log(storagePath + file.url);
+          // console.log(cloudPath);
+          // console.log(cloudPath + file.url);
           let mockFile = { name: file.name, size: 123456, id: file.id };
 
           dropzone.emit("addedfile", mockFile);
-          dropzone.emit("thumbnail", mockFile, storagePath + file.url);
+          dropzone.emit("thumbnail", mockFile, cloudPath + file.url);
           dropzone.emit("complete", mockFile);
 
           dropzone.files.push(mockFile);

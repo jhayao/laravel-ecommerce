@@ -48,6 +48,7 @@ window.config = {
 
 window.assetsPath = document.documentElement.getAttribute('data-assets-path');
 window.storagePath = document.documentElement.getAttribute('data-storage-path');
+window.cloudPath = document.documentElement.getAttribute('data-cloud-path');
 window.baseUrl = document.documentElement.getAttribute('data-base-url') + '/';
 window.templateName = document.documentElement.getAttribute('data-template');
 window.rtlSupport = true; // set true for rtl support (rtl + ltr), false for ltr only.

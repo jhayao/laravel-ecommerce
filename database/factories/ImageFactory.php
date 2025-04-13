@@ -17,7 +17,12 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'image' => function () {
+                $index = rand(1, 11); // Adjust based on the number of images you have
+                return "public/images/products/product{$index}.jpg";
+            },
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

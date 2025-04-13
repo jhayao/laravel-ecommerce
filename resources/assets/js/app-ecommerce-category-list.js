@@ -123,7 +123,7 @@ function initializeDataTable() {
               // For Product image
               var $output =
                 '<img src="' +
-                storagePath +
+                // storagePath +
                 $image +
                 '" alt="Product-' +
                 $id +

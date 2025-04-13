@@ -68,9 +68,7 @@
 
     <!-- Options -->
     <div class="col-12 col-lg-8 pt-6 pt-lg-0">
-      @php
-          echo $shop_settings['store_name'];
-      @endphp
+
       <form method="POST" action="{{ route('pages-settings-save-store-details') }}">
         @csrf
         <div class="card mb-6">

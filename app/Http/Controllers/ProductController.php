@@ -188,7 +188,7 @@ class ProductController extends Controller
       return response()->json($data);
     }
     $product_data = $product_data->map(function ($product) {
-      $product->image = $product->image ? 'https://pub-e64b48d6794a40709a9461dc60f7f881.r2.dev/public/'. $product->image : null;
+      $product->image = $product->image ? Storage::url($product->image) : null;
       return $product;
     });
     return response()->json($product_data->load('images'));

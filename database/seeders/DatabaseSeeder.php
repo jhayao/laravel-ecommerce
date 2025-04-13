@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Image;
+use App\Models\Product;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,8 +22,16 @@ class DatabaseSeeder extends Seeder
 //      'name' => 'Test User',
 //      'email' => 'test@example.com',
 //    ]);
-    $this->call([
-      CustomerSeeder::class,
-    ]);
+//    $this->call([
+//      CustomerSeeder::class,
+//    ]);
+
+    Category::factory()->count(10)->create();
+    Image::factory()->count(11)->create();
+    Product::factory(100)->create()->each(function ($product) {
+        $product->images()->attach(Image::all()->random(3)->pluck('id')->toArray());
+    });
+
+
   }
 }
