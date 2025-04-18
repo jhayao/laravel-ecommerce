@@ -29,7 +29,6 @@ class Dashboard extends Controller
       ];
     });
     $sales_per_month = $sales_per_month->pluck('total_sales', 'month')->toArray();
-    dump($sales_per_month);
     $dashboard_data = [
       'total_users' => $total_customers,
       'total_orders' => $total_orders,
@@ -37,7 +36,6 @@ class Dashboard extends Controller
       'total_products' => $total_products,
       'total_categories' => $total_categories,
     ];
-    dump($dashboard_data);
     return view('content.pages.dashboard');
   }
 }

@@ -31,7 +31,7 @@ use App\Http\Controllers\pages\Page2;
 use App\Http\Controllers\pages\MiscError;
 use App\Http\Controllers\authentications\LoginBasic;
 use App\Http\Controllers\authentications\RegisterBasic;
-use App\Http\Controllers\Api\UserLoginController;
+use App\Http\Controllers\API\UserLoginController;
 use Illuminate\Support\Facades\Auth;
 
 Route::middleware(['auth'])->group(function () {
