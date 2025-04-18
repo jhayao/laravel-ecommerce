@@ -1,12 +1,5 @@
 {
   "menu": [
-
-    {
-      "url": "/dashboard",
-      "icon": "menu-icon tf-icons ri-dashboard-line",
-      "name": "Dashboard",
-      "slug": "pages-dashboard"
-    },
     {
       "name": "Products",
       "icon": "menu-icon tf-icons ri-shopping-bag-3-line",
