@@ -27,6 +27,6 @@ yarn-error.log
 /public/css
 /public/js
 /public/images/
-/.wrangler
-/cert/*
 database/database.sqlite
+.wrangler
+
