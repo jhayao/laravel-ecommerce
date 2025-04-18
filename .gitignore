@@ -29,4 +29,5 @@ yarn-error.log
 /public/images/
 database/database.sqlite
 .wrangler
+bootstrap/cache
 
