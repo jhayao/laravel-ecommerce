@@ -38,11 +38,10 @@
           <div>
             <div class="d-flex svg-illustration align-items-center gap-2 mb-6">
               <span class="app-brand-logo demo">@include('_partials.macros',["width"=>25,"withbg"=>'var(--bs-primary)'])</span>
-              <span class="mb-0 app-brand-text fw-semibold demo">{{ config('variables.templateName') }}</span>
+              <span class="mb-0 app-brand-text fw-semibold demo">{{ $store_name }}</span>
             </div>
-            <p class="mb-1">Office 149, 450 South Brand Brooklyn</p>
-            <p class="mb-1">San Diego County, CA 91905, USA</p>
-            <p class="mb-0">+1 (123) 456 7891, +44 (876) 543 2198</p>
+            <p class="mb-1">{{ $admin_address }}</p>
+            <p class="mb-0">{{ $admin_phone }}</p>
           </div>
           <div>
             <h5 class="mb-6">Invoice # {{ $payment->invoice_id }}</h5>
@@ -144,10 +143,10 @@
                 <p class="mb-0 pt-2">Total:</p>
               </td>
               <td class="text-end px-0 py-6 w-px-100">
-                <p class="fw-medium mb-1">₱ {{ $total }}.00</p>
+                <p class="fw-medium mb-1">₱ {{ $total }}</p>
                 <p class="fw-medium mb-1">₱00.00</p>
                 <p class="fw-medium mb-1 border-bottom pb-2">₱00.00</p>
-                <p class="fw-medium mb-0 pt-2">₱ {{$total}}.00</p>
+                <p class="fw-medium mb-0 pt-2">₱ {{$total}}</p>
               </td>
             </tr>
           </tbody>

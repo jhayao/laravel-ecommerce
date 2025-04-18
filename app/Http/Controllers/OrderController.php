@@ -36,6 +36,7 @@ class OrderController extends Controller
     $request->validated();
     $customer = auth()->user();
 
+
     DB::beginTransaction();
     try {
 
@@ -74,15 +75,12 @@ class OrderController extends Controller
       ]);
 
 
-      $order->items()->createMany($cart->products->map(function ($product) {
-        return [
-          'product_id' => $product->id,
-          'quantity' => $product->pivot->quantity,
-          'price' => $product->price,
-        ];
-      }));
-
       $cart->products()->detach();
+
+      $customer->address()->updateOrCreate(
+        ['customer_id' => $customer->id], // Condition to check existing record
+        $request->all() // Data to update or insert
+      );
 
       DB::commit();
       return response()->json(['message' => 'Order created successfully', 'data' => $order], 201);

@@ -81,21 +81,10 @@
       ]
     },
     {
-      "name": "Settings",
+      "url": "/settings",
       "icon": "menu-icon tf-icons ri-settings-2-line",
-      "slug": "pages-settings",
-      "submenu": [
-        {
-          "url": "settings/general",
-          "name": "General Settings",
-          "slug": "pages-settings-general"
-        },
-        {
-          "url": "settings/notifications",
-          "name": "Notification Settings",
-          "slug": "pages-settings-notifications"
-        }
-      ]
+      "name": "Settings",
+      "slug": "pages-settings"
     }
   ]
 }

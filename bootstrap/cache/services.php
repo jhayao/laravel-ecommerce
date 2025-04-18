@@ -33,10 +33,12 @@
     29 => 'Carbon\\Laravel\\ServiceProvider',
     30 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     31 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    32 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
-    33 => 'App\\Providers\\AppServiceProvider',
-    34 => 'App\\Providers\\MenuServiceProvider',
-    35 => 'App\\Providers\\TelescopeServiceProvider',
+    32 => 'RichanFongdasen\\Turso\\TursoLaravelServiceProvider',
+    33 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
+    34 => 'Libsql\\Laravel\\LibsqlServiceProvider',
+    35 => 'App\\Providers\\AppServiceProvider',
+    36 => 'App\\Providers\\MenuServiceProvider',
+    37 => 'App\\Providers\\TelescopeServiceProvider',
   ),
   'eager' => 
   array (
@@ -57,10 +59,12 @@
     14 => 'Carbon\\Laravel\\ServiceProvider',
     15 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     16 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    17 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
-    18 => 'App\\Providers\\AppServiceProvider',
-    19 => 'App\\Providers\\MenuServiceProvider',
-    20 => 'App\\Providers\\TelescopeServiceProvider',
+    17 => 'RichanFongdasen\\Turso\\TursoLaravelServiceProvider',
+    18 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
+    19 => 'Libsql\\Laravel\\LibsqlServiceProvider',
+    20 => 'App\\Providers\\AppServiceProvider',
+    21 => 'App\\Providers\\MenuServiceProvider',
+    22 => 'App\\Providers\\TelescopeServiceProvider',
   ),
   'deferred' => 
   array (

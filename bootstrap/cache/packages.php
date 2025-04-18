@@ -66,6 +66,17 @@
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
     ),
   ),
+  'richan-fongdasen/turso-laravel' => 
+  array (
+    'aliases' => 
+    array (
+      'Turso' => 'RichanFongdasen\\Turso\\Facades\\Turso',
+    ),
+    'providers' => 
+    array (
+      0 => 'RichanFongdasen\\Turso\\TursoLaravelServiceProvider',
+    ),
+  ),
   'spatie/laravel-ignition' => 
   array (
     'aliases' => 
@@ -75,6 +86,13 @@
     'providers' => 
     array (
       0 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
+    ),
+  ),
+  'turso/libsql-laravel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Libsql\\Laravel\\LibsqlServiceProvider',
     ),
   ),
 );
