@@ -100,14 +100,14 @@ $navbarDetached = ($navbarDetached ?? '');
                 </div>
               </a>
             </li>
-            <li>
-              <div class="dropdown-divider"></div>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0);' }}">
-                <i class="ri-user-3-line ri-22px me-3"></i><span class="align-middle">My Profile</span>
-              </a>
-            </li>
+{{--            <li>--}}
+{{--              <div class="dropdown-divider"></div>--}}
+{{--            </li>--}}
+{{--            <li>--}}
+{{--              <a class="dropdown-item" href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0);' }}">--}}
+{{--                <i class="ri-user-3-line ri-22px me-3"></i><span class="align-middle">My Profile</span>--}}
+{{--              </a>--}}
+{{--            </li>--}}
 {{--            @if (Auth::check() && Laravel\Jetstream\Jetstream::hasApiFeatures())--}}
 {{--              <li>--}}
 {{--                <a class="dropdown-item" href="{{ route('api-tokens.index') }}">--}}
@@ -115,14 +115,14 @@ $navbarDetached = ($navbarDetached ?? '');
 {{--                </a>--}}
 {{--              </li>--}}
 {{--            @endif--}}
-            <li>
-              <a class="dropdown-item" href="javascript:void(0);">
-                <span class="d-flex align-items-center align-middle">
-                  <i class="flex-shrink-0 ri-file-text-line ri-22px me-3"></i>
-                  <span class="flex-grow-1 align-middle">Billing</span>
-                </span>
-              </a>
-            </li>
+{{--            <li>--}}
+{{--              <a class="dropdown-item" href="javascript:void(0);">--}}
+{{--                <span class="d-flex align-items-center align-middle">--}}
+{{--                  <i class="flex-shrink-0 ri-file-text-line ri-22px me-3"></i>--}}
+{{--                  <span class="flex-grow-1 align-middle">Billing</span>--}}
+{{--                </span>--}}
+{{--              </a>--}}
+{{--            </li>--}}
 
 {{--            @if (Auth::User() && Laravel\Jetstream\Jetstream::hasTeamFeatures())--}}
 {{--              <li>--}}

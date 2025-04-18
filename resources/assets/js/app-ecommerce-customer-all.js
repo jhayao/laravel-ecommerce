@@ -335,14 +335,6 @@ $(function () {
             }
           ]
         },
-        {
-          text: '<i class="ri-add-line ri-16px me-0 me-sm-1 align-baseline"></i><span class="d-none d-sm-inline-block">Add Customer</span>',
-          className: 'add-new btn btn-primary waves-effect waves-light',
-          attr: {
-            'data-bs-toggle': 'offcanvas',
-            'data-bs-target': '#offcanvasEcommerceCustomerAdd'
-          }
-        }
       ],
       // For responsive popup
       responsive: {
