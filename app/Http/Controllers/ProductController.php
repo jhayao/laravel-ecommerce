@@ -73,7 +73,24 @@ class ProductController extends Controller
    */
   public function show(Product $product): JsonResponse
   {
-    return response()->json($product->load('images'));
+    $product_data = Product::withTrashed()->join('categories', 'products.category_id', '=', 'categories.id')
+      ->select('products.*',
+        'categories.title as category_title',
+        DB::raw('\'sale\' as label'),
+        DB::raw('MIN(images.image) AS image'),
+        DB::raw('CASE WHEN products.status = \'publish\' THEN 2 WHEN products.status = \'deleted\' THEN 1 ELSE 3 END AS status_id'))
+      ->leftJoin('product_images', 'products.id', '=', 'product_images.product_id')
+      ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
+      ->groupBy('products.id','categories.title')
+      ->where('products.id', $product->id)
+      ->get();
+
+
+    $product_data = $product_data->map(function ($product) {
+      $product->image = $product->image ? Storage::url($product->image) : null;
+      return $product;
+    });
+    return response()->json($product_data->load('images')->first());
   }
 
   public function restore(int $product_id): JsonResponse
@@ -164,7 +181,7 @@ class ProductController extends Controller
     return response()->json(['message' => 'Image deleted successfully'], 200);
   }
 
-  public function getProductList(?string $admin = null): JsonResponse
+  public function getProductList(?string $admin = null, ?int $product_id = null): JsonResponse
   {
     $product_data = Product::withTrashed()->join('categories', 'products.category_id', '=', 'categories.id')
       ->select('products.*',
@@ -176,6 +193,7 @@ class ProductController extends Controller
       ->leftJoin('images', 'product_images.image_id', '=', 'images.id')
       ->groupBy('products.id','categories.title')
       ->get();
+
     if ($admin) {
       $product_data = $product_data->map(function ($product) {
         $product->image = $product->image ? Storage::url($product->image) : null;
@@ -186,6 +204,10 @@ class ProductController extends Controller
       $data = ['data' => $product_data->load('images')];
       return response()->json($data);
     }
+    $product_data = $product_data->map(function ($product) {
+      $product->image = $product->image ? Storage::url($product->image) : null;
+      return $product;
+    });
     return response()->json($product_data->load('images'));
   }
 

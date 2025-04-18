@@ -52,8 +52,9 @@ $(function () {
           targets: 2,
           render: function (data, type, full, meta) {
             var $order_number = full['order']['order_number'];
+            var $order_id = full['order']['id'];
             // Creates full output for row
-            var $row_output = '<a href="' + baseUrl + 'invoice/details/16"><span>#' + $order_number + '</span></a>';
+            var $row_output = '<a href="' + baseUrl + 'invoice/details/' + $order_id + '" ><span>#' + $order_number + '</span></a>';
             return $row_output;
           }
         },

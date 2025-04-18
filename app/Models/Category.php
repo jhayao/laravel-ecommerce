@@ -23,7 +23,8 @@ class Category extends Model
         'slug',
         'image',
         'parent_id',
-        'status'];
+        'status'
+    ];
 
     protected $hidden = ['created_at', 'updated_at'];
 

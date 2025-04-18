@@ -17,7 +17,10 @@ class ProductImageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'product_id' => $this->faker->numberBetween(1, 20), // Assuming you have 20 products
+            'image_id' => $this->faker->numberBetween(1, 20), // Assuming you have 20 images
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

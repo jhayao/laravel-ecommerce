@@ -96,6 +96,7 @@ class CategoryController extends Controller
   public function restore(int $id): JsonResponse
   {
     $category = Category::withTrashed()->find($id);
+    dump($category);
     if ($category->trashed()) {
       $category->restore(); // Restore first
       $category->status = 'publish'; // Update status
