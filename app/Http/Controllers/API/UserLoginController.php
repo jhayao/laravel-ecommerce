@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -25,6 +25,6 @@ class UserLoginController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('pages-dashboard');
+        return redirect()->route('pages-product-list');
     }
 }
