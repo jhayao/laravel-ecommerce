@@ -7,11 +7,11 @@
 /storage/*.key
 /vendor
 
-# .env
+.env
 .env.backup
 .env.production
 .phpunit.result.cache
-
+database/database.sqlite
 docker-compose.override.yml
 
 Homestead.json
@@ -29,3 +29,4 @@ yarn-error.log
 /public/images/
 /.wrangler
 /cert/*
+.env
