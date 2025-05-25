@@ -20,6 +20,13 @@ provider:
         DB_URL: ${ssm:/laravel/prod/DB_URL}
         SESSION_DRIVER: database # Change to database if you have set up a database
         ASSET_URL: https://pub-ccfb6450958b4c0e9947a2f1f9c329c4.r2.dev/ # Change to your domain
+        AWS_ACCESS_KEY_ID: ${ssm:/laravel/prod/AWS_KEY}
+        AWS_SECRET_ACCESS_KEY: ${ssm:/laravel/prod/AWS_SECRET_LEY}
+        AWS_DEFAULT_REGION: ap-southeast-1 # Change to your region
+        AWS_BUCKET: jhayao # Change to your bucket name
+        AWS_ENDPOINT: https://e20d459564b5296f048f8ac255bd5b81.r2.cloudflarestorage.com
+        AWS_URL: https://pub-e64b48d6794a40709a9461dc60f7f881.r2.dev # Change to your bucket URL
+
 
 package:
     # Files and directories to exclude from deployment
