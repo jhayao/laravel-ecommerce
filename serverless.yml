@@ -15,7 +15,7 @@ provider:
     environment:
         APP_ENV: production # Or use ${sls:stage} if you want the environment to match the stage
         APP_DEBUG: true # Set to true only for debugging
-        DB_CONNECTION: pgsql # Change to your database connection
+        DB_CONNECTION: mysql # Change to your database connection
         DB_URL: ${ssm:/laravel/prod/DB_URL}
         SESSION_DRIVER: database # Change to database if you have set up a database
         ASSET_URL: https://pub-ccfb6450958b4c0e9947a2f1f9c329c4.r2.dev/ # Change to your domain
