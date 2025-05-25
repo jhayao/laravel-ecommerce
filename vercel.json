@@ -23,13 +23,7 @@
     "APP_SERVICES_CACHE": "/tmp/services.php",
     "VIEW_COMPILED_PATH": "/tmp",
     "CACHE_DRIVER": "array",
-    "ASSET_URL":"https://pub-ccfb6450958b4c0e9947a2f1f9c329c4.r2.dev/public",
     "LOG_CHANNEL": "stderr",
-    "SESSION_DRIVER": "cookie",
-    "CLOUDFLARE_R2_ACCESS_KEY_ID": "2517a0006fab9662e7668948f06930d7",
-    "CLOUDFLARE_R2_SECRET_ACCESS_KEY": "083706c17db64be127311a359d40861cfce5792d9b9555e6099b3b3c39604a65",
-    "CLOUDFLARE_R2_BUCKET": "loan",
-    "CLOUDFLARE_R2_ENDPOINT": "https://e20d459564b5296f048f8ac255bd5b81.r2.cloudflarestorage.com",
-    "CLOUDFLARE_R2_URL": "https://r2.jhayao.dev"
+    "SESSION_DRIVER": "cookie"
   }
 }
