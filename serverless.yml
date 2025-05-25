@@ -22,6 +22,7 @@ provider:
         DB_USERNAME: ${ssm:/laravel/prod/username} # Change to your database username
         DB_PASSWORD: ${ssm:/laravel/prod/password}      # Change to your database password
         SESSION_DRIVER: database # Change to database if you have set up a database
+        ASSET_URL: https://pub-ccfb6450958b4c0e9947a2f1f9c329c4.r2.dev/ # Change to your domain
 
 package:
     # Files and directories to exclude from deployment
