@@ -4,6 +4,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
-/public
+/public/build
+/public/assets
 /storage
 database/*.sqlite
