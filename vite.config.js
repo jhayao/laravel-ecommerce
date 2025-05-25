@@ -48,7 +48,8 @@ export default defineConfig({
   base: '/',
   build: {
     outDir: 'public/build',
-    assetsDir: 'assets'
+    assetsDir: 'assets',
+    manifest: true
   },
   plugins: [
     laravel({
