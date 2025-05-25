@@ -45,16 +45,11 @@ function libsWindowAssignment() {
 
 export default defineConfig({
   // 👇 Change this if deploying to a subfolder like '/myapp/'
-  base: '/',
-  build: {
-    outDir: 'public/build',
-    assetsDir: 'assets',
-    manifest: true
-  },
   plugins: [
     laravel({
       input: [
         'resources/css/app.css',
+        'resources/assets/css/demo.css',
         'resources/assets/css/demo.css',
         'resources/js/app.js',
         ...pageJsFiles,

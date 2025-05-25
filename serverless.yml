@@ -19,7 +19,7 @@ provider:
         DB_CONNECTION: mysql # Change to your database connection
         DB_URL: ${ssm:/laravel/prod/DB_URL}
         SESSION_DRIVER: database # Change to database if you have set up a database
-        ASSET_URL: https://pub-ccfb6450958b4c0e9947a2f1f9c329c4.r2.dev/ # Change to your domain
+        ASSET_URL: https://pub-9c6abbefcb4545879f6d05f0122a3451.r2.dev/ # Change to your domain
         R2_ACCESS_KEY_ID: ${ssm:/laravel/prod/AWS_KEY}
         R2_SECRET_ACCESS_KEY: ${ssm:/laravel/prod/AWS_SECRET_LEY}
         R2_DEFAULT_REGION: ap-southeast-1 # Change to your region
