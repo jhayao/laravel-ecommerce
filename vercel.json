@@ -24,6 +24,7 @@
     "VIEW_COMPILED_PATH": "/tmp",
     "CACHE_DRIVER": "array",
     "LOG_CHANNEL": "stderr",
-    "SESSION_DRIVER": "cookie"
+    "SESSION_DRIVER": "cookie",
+    "ASSET_URL": "https://pub-ccfb6450958b4c0e9947a2f1f9c329c4.r2.dev"
   }
 }
