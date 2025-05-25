@@ -57,9 +57,17 @@
       "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
       "@php artisan migrate --graceful --ansi"
     ],
-    "vercel" : [
-      "@php artisan config:clear --no-dev"
-
+    "dev": [
+      "Composer\\Config::disableProcessTimeout",
+      "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve --port=3000\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names='server,queue,vite'"
+    ],
+    "vercel": [
+      "@php artisan config:clear",
+      "@php artisan route:clear"
+    ],
+    "test": [
+      "@php artisan config:clear --ansi",
+      "@php artisan test"
     ]
   },
   "extra": {
