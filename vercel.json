@@ -26,5 +26,5 @@
     "LOG_CHANNEL": "stderr",
     "SESSION_DRIVER": "cookie"
   },
-  "buildCommand": "npm install && npm run build && php artisan config:cache"
+  "buildCommand": "npm install && npm run build"
 }
