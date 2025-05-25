@@ -15,6 +15,7 @@ provider:
     environment:
         APP_ENV: production # Or use ${sls:stage} if you want the environment to match the stage
         APP_DEBUG: true # Set to true only for debugging
+        APP_KEY: ${ssm:/laravel/prod/APP_KEY} # Set this to your Laravel app key
         DB_CONNECTION: mysql # Change to your database connection
         DB_URL: ${ssm:/laravel/prod/DB_URL}
         SESSION_DRIVER: database # Change to database if you have set up a database
