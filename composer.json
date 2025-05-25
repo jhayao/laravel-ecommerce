@@ -58,7 +58,8 @@
       "@php artisan migrate --graceful --ansi"
     ],
     "vercel" : [
-      "@php artisan config:clear"
+      "@php artisan config:clear --no-dev"
+
     ]
   },
   "extra": {
