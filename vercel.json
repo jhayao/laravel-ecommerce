@@ -23,6 +23,7 @@
     "APP_SERVICES_CACHE": "/tmp/services.php",
     "VIEW_COMPILED_PATH": "/tmp",
     "CACHE_DRIVER": "array",
+    "ASSET_URL":"https://pub-ccfb6450958b4c0e9947a2f1f9c329c4.r2.dev/public",
     "LOG_CHANNEL": "stderr",
     "SESSION_DRIVER": "cookie",
     "CLOUDFLARE_R2_ACCESS_KEY_ID": "2517a0006fab9662e7668948f06930d7",
