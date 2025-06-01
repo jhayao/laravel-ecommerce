@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\FcmTokenController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\PaymentController;
@@ -107,4 +108,11 @@ Route::prefix('customer')->group(function () {
 
 Route::post('/register', [CustomerAuthController::class, 'register']);
 Route::post('/login', [CustomerAuthController::class, 'login']);
+
+// FCM Token routes
+Route::group(['prefix' => 'fcm'], function () {
+  Route::post('save', [FcmTokenController::class, 'saveFCM'])->name('fcm.save');
+  Route::get('user/{userId}', [FcmTokenController::class, 'getUserTokens'])->name('fcm.user-tokens');
+  Route::put('deactivate/{tokenId}', [FcmTokenController::class, 'deactivateToken'])->name('fcm.deactivate');
+});
 
