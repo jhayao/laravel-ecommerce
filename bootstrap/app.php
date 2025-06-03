@@ -17,9 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
     $middleware->web(LocaleMiddleware::class);
 //    $middleware->api(Sa::class);
     $middleware->validateCsrfTokens(except: [
-//      'api/*',
+      'api/*',
       'telescope/*',
-      'api/fcm/*',
     ]);
      $middleware->statefulApi();
   })
