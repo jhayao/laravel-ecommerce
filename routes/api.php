@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FcmTokenController;
+use App\Http\Controllers\OneSignalController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\PaymentController;
@@ -114,5 +115,18 @@ Route::group(['prefix' => 'fcm'], function () {
   Route::post('save', [FcmTokenController::class, 'saveFCM'])->name('fcm.save');
   Route::get('user/{userId}', [FcmTokenController::class, 'getUserTokens'])->name('fcm.user-tokens');
   Route::put('deactivate/{tokenId}', [FcmTokenController::class, 'deactivateToken'])->name('fcm.deactivate');
+});
+
+// OneSignal Push Notification routes
+Route::group(['prefix' => 'onesignal'], function () {
+  Route::get('test', [OneSignalController::class, 'test'])->name('onesignal.test');
+  Route::get('app-info', [OneSignalController::class, 'getAppInfo'])->name('onesignal.app-info');
+  Route::get('notification/{notificationId}', [OneSignalController::class, 'getNotification'])->name('onesignal.get-notification');
+  
+  Route::post('send/all', [OneSignalController::class, 'sendToAll'])->name('onesignal.send-all');
+  Route::post('send/segments', [OneSignalController::class, 'sendToSegments'])->name('onesignal.send-segments');
+  Route::post('send/player-ids', [OneSignalController::class, 'sendToPlayerIds'])->name('onesignal.send-player-ids');
+  Route::post('send/external-user-ids', [OneSignalController::class, 'sendToExternalUserIds'])->name('onesignal.send-external-users');
+  Route::post('send/alias-external-ids', [OneSignalController::class, 'sendToAliasExternalIds'])->name('onesignal.send-alias-external-ids');
 });
 

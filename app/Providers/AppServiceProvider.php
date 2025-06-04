@@ -32,5 +32,8 @@ class AppServiceProvider extends ServiceProvider
       }
       return [];
     });
+    
+    // Register the Order Observer to handle order status updates
+    \App\Models\Order::observe(\App\Observers\OrderObserver::class);
   }
 }

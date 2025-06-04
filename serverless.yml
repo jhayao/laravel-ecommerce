@@ -27,6 +27,8 @@ provider:
         FILESYSTEM_DISK: r2
         R2_ENDPOINT: https://e20d459564b5296f048f8ac255bd5b81.r2.cloudflarestorage.com
         R2_URL: https://pub-e64b48d6794a40709a9461dc60f7f881.r2.dev # Change to your bucket URL
+        QUEUE_CONNECTION: sqs
+        SQS_QUEUE: ${construct:jobs.queueUrl}
 
 
 
@@ -66,7 +68,14 @@ functions:
         #    - schedule:
         #          rate: rate(1 minute)
         #          input: '"schedule:run"'
+constructs:
+    jobs:
+        type: queue
+        worker:
+            handler: Bref\LaravelBridge\Queue\QueueHandler
+            runtime: php-82
+            timeout: 60 # seconds
 
 plugins:
-    # We need to include the Bref plugin
-    - ./vendor/bref/bref
+  - ./vendor/bref/bref
+  - serverless-lift
