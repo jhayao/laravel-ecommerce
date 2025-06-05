@@ -29,6 +29,9 @@ provider:
         R2_URL: https://pub-e64b48d6794a40709a9461dc60f7f881.r2.dev # Change to your bucket URL
         QUEUE_CONNECTION: sqs
         SQS_QUEUE: ${construct:jobs.queueUrl}
+        ONESIGNAL_REST_API_URL: https://api.onesignal.com
+        ONESIGNAL_APP_ID: ${ssm:/laravel/prod/ONESIGNAL_APP_ID}
+        ONESIGNAL_API_KEY: ${ssm:/laravel/prod/ONESIGNAL_REST_API_KEY}
 
 
 
