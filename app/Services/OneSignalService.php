@@ -151,6 +151,8 @@ class OneSignalService
                     'content-type' => 'application/json',
                 ],
             ]);
+            Log::info('Rest APi Key'. $this->restApiKey);
+            Log::info('Test'. json_encode($response));
 
             $statusCode = $response->getStatusCode();
             $responseData = json_decode($response->getBody()->getContents(), true);
