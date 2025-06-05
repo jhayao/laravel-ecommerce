@@ -36,8 +36,9 @@
     32 => 'Termwind\\Laravel\\TermwindServiceProvider',
     33 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
     34 => 'App\\Providers\\AppServiceProvider',
-    35 => 'App\\Providers\\MenuServiceProvider',
-    36 => 'App\\Providers\\OneSignalServiceProvider',
+    35 => 'App\\Providers\\HorizonServiceProvider',
+    36 => 'App\\Providers\\MenuServiceProvider',
+    37 => 'App\\Providers\\OneSignalServiceProvider',
   ),
   'eager' => 
   array (
@@ -61,8 +62,9 @@
     17 => 'Termwind\\Laravel\\TermwindServiceProvider',
     18 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
     19 => 'App\\Providers\\AppServiceProvider',
-    20 => 'App\\Providers\\MenuServiceProvider',
-    21 => 'App\\Providers\\OneSignalServiceProvider',
+    20 => 'App\\Providers\\HorizonServiceProvider',
+    21 => 'App\\Providers\\MenuServiceProvider',
+    22 => 'App\\Providers\\OneSignalServiceProvider',
   ),
   'deferred' => 
   array (

@@ -27,13 +27,13 @@ provider:
         FILESYSTEM_DISK: r2
         R2_ENDPOINT: https://e20d459564b5296f048f8ac255bd5b81.r2.cloudflarestorage.com
         R2_URL: https://pub-e64b48d6794a40709a9461dc60f7f881.r2.dev # Change to your bucket URL
-        QUEUE_CONNECTION: sqs
-        SQS_QUEUE: ${construct:jobs.queueUrl}
         ONESIGNAL_REST_API_URL: https://api.onesignal.com
         ONESIGNAL_APP_ID: ${ssm:/laravel/prod/ONESIGNAL_APP_ID}
         ONESIGNAL_API_KEY: ${ssm:/laravel/prod/ONESIGNAL_REST_API_KEY}
         LOG_CHANNEL: slack
         LOG_SLACK_WEBHOOK_URL: ${ssm:/laravel/prod/slack_webhook}
+        QUEUE_CONNECTION: sqs
+        SQS_QUEUE: ${construct:jobs.queueUrl}
 
 
 
