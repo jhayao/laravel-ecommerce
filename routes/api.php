@@ -12,6 +12,7 @@ use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
@@ -129,4 +130,9 @@ Route::group(['prefix' => 'onesignal'], function () {
   Route::post('send/external-user-ids', [OneSignalController::class, 'sendToExternalUserIds'])->name('onesignal.send-external-users');
   Route::post('send/alias-external-ids', [OneSignalController::class, 'sendToAliasExternalIds'])->name('onesignal.send-alias-external-ids');
 });
+
+Route::get('/test', function () {
+    Log::info('API test endpoint hit');
+    return response()->json(['message' => 'API is working!']);
+})->name('api.test');
 
