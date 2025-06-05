@@ -76,7 +76,7 @@ constructs:
         type: queue
         worker:
             handler: Bref\LaravelBridge\Queue\QueueHandler
-            runtime: php-81
+            runtime: php-82
             timeout: 60 # seconds
 
 plugins:
