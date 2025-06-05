@@ -32,6 +32,8 @@ provider:
         ONESIGNAL_REST_API_URL: https://api.onesignal.com
         ONESIGNAL_APP_ID: ${ssm:/laravel/prod/ONESIGNAL_APP_ID}
         ONESIGNAL_API_KEY: ${ssm:/laravel/prod/ONESIGNAL_REST_API_KEY}
+        LOG_CHANNEL: slack
+        LOG_SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
 
 
 
@@ -76,7 +78,7 @@ constructs:
         type: queue
         worker:
             handler: Bref\LaravelBridge\Queue\QueueHandler
-            runtime: php-81
+            runtime: php-82
             timeout: 60 # seconds
 
 plugins:
