@@ -33,7 +33,7 @@ provider:
         ONESIGNAL_APP_ID: ${ssm:/laravel/prod/ONESIGNAL_APP_ID}
         ONESIGNAL_API_KEY: ${ssm:/laravel/prod/ONESIGNAL_REST_API_KEY}
         LOG_CHANNEL: slack
-        LOG_SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+        LOG_SLACK_WEBHOOK_URL: ${ssm:/laravel/prod/slack_webhook}
 
 
 
