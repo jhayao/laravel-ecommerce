@@ -91,7 +91,7 @@ Route::group(['prefix' => 'checkout', 'middleware' => 'auth:sanctum'], function 
   Route::delete('delete/{order}', [OrderController::class, 'destroy'])->name('order.delete');
 });
 
-Route::group(['prefix'=> 'order'], function () {
+Route::group(['prefix' => 'order'], function () {
   Route::get('list', [OrderController::class, 'getOrderList'])->name('order.list');
   Route::get('details/{order}', [OrderItemController::class, 'getOrderDetails'])->name('order.details');
   Route::put('update-status/{order}', [OrderController::class, 'updateOrderStatus'])->name('order.update-status');
@@ -123,7 +123,7 @@ Route::group(['prefix' => 'onesignal'], function () {
   Route::get('test', [OneSignalController::class, 'test'])->name('onesignal.test');
   Route::get('app-info', [OneSignalController::class, 'getAppInfo'])->name('onesignal.app-info');
   Route::get('notification/{notificationId}', [OneSignalController::class, 'getNotification'])->name('onesignal.get-notification');
-  
+
   Route::post('send/all', [OneSignalController::class, 'sendToAll'])->name('onesignal.send-all');
   Route::post('send/segments', [OneSignalController::class, 'sendToSegments'])->name('onesignal.send-segments');
   Route::post('send/player-ids', [OneSignalController::class, 'sendToPlayerIds'])->name('onesignal.send-player-ids');
@@ -132,7 +132,10 @@ Route::group(['prefix' => 'onesignal'], function () {
 });
 
 Route::get('/test', function () {
-    Log::info('API test endpoint hit');
-    return response()->json(['message' => 'API is working!']);
+  $appId = config('services.onesignal.app_id');
+  $restApiKey = config('services.onesignal.rest_api_key');
+  $apiUrl = config('services.onesignal.api_url');
+  Log::info('API test endpoint hit');
+  return response()->json(['message' => 'API is working!', 'app_id' => $appId, 'api_url' => $apiUrl, 'rest_api_key' => substr($restApiKey, 0, 8) ], 200);
 })->name('api.test');
 
